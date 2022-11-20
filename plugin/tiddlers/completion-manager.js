@@ -23,6 +23,10 @@ Keyboard handling utilities
 		this.completingDom = null;
 		this.completingPosition = -1;
 		this.completingLastSelection = -1;
+		this.completingIndex = -1;
+		this.completingLastQuery = "";
+		this.completingLastResults = [];
+
 		this.variableWidget = new widget.widget({
 			type: "widget",
 			children: []
@@ -54,6 +58,24 @@ Keyboard handling utilities
 			this.cancelCompletion();
 			event.stopImmediatePropagation();
 			return false;
+		} else if (event.key === "ArrowUp") {
+			this.completingIndex--;
+			if (this.completingIndex < 1) {
+				this.completingIndex += this.completingLastResults.length;
+			}
+			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingIndex);
+			event.stopImmediatePropagation();
+			event.preventDefault();
+			return;
+		} else if (event.key === "ArrowDown") {
+			this.completingIndex++;
+			if (this.completingIndex > this.completingLastResults.length) {
+				this.completingIndex -= this.completingLastResults.length;
+			}
+			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingIndex);
+			event.stopImmediatePropagation();
+			event.preventDefault();
+			return;
 		}
 
 		let selectionStart = this.completingDom.selectionStart;
@@ -88,7 +110,7 @@ Keyboard handling utilities
 
 	CompletionManager.prototype.handleBlurEvent = function(event) {
 		if (this.completingDom) {
-			this.cancelCompletion();
+			// this.cancelCompletion();
 		}
 	}
 
@@ -119,6 +141,9 @@ Keyboard handling utilities
 		this.completingDom = null;
 		this.completingPosition = -1;
 		this.completingLastSelection = -1;
+		this.completingIndex = -1;
+		this.completingLastQuery = "";
+		this.completingLastResults = [];
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, null);
 	};
 
@@ -133,17 +158,22 @@ Keyboard handling utilities
 	}
 
 	CompletionManager.prototype.refreshSearch = function(query) {
+		if (query === this.completingLastQuery) {
+			return;
+		}
+		this.completingLastQuery = query;
 		const filter = this.completingTemplate.filter;
 		this.variableWidget.setVariable('query', query);
 
-		const tiddlers = $tw.wiki.filterTiddlers(filter, {getVariable: function(name) {
+		this.completingIndex = 1;
+		this.completingLastResults = $tw.wiki.filterTiddlers(filter, {getVariable: function(name) {
 			if (name === "query") {
 				return query;
 			}
 			return "";
 		}});
-		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, tiddlers);
-		console.log(tiddlers);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.completingLastResults);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingIndex);
 	}
 
 	CompletionManager.prototype.repositionCompletion = function(selectionStart) {

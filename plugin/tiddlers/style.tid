@@ -4,7 +4,25 @@ type: text/vnd.tiddlywiki
 
 .ec_tc-completion {
 	position: absolute;
-	background: white;
-	border: 2px solid black;
+	background: <<colour modal-background>>;
+	border: 2px solid <<colour modal-border>>;
 	padding: 1em;
+	box-shadow: "2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.ec_tc-completion li {
+	list-style: none;
+}
+.ec_tc-completion .label {
+	color: <<colour muted-foreground>>;
+}
+.ec_tc-completion .link {
+	color: <<colour tiddler-link-foreground>>;
+	cursor: pointer;
+}
+.ec_tc-completion .link.selected,
+.ec_tc-completion .link:hover
+{
+	background-color: <<colour tiddler-link-foreground>>;
+	color: <<colour background>>;
 }
