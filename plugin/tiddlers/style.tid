@@ -1,0 +1,10 @@
+title: $:/plugins/EvidentlyCube/TiddlerCompletion/Style
+tags: $:/tags/Stylesheet
+type: text/vnd.tiddlywiki
+
+.ec_tc-completion {
+	position: absolute;
+	background: white;
+	border: 2px solid black;
+	padding: 1em;
+}

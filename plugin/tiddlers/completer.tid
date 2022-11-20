@@ -1,0 +1,12 @@
+title: $:/plugins/EvidentlyCube/TiddlerCompletion/completion
+tags: $:/tags/PageTemplate
+
+\whitespace trim
+<$list filter="[{$:/temp/TiddlerCompletion/completion-data!!show}match[1]]" variable="ignore">
+<ul class="ec_tc-completion" style={{$:/temp/TiddlerCompletion/completion-data!!style}}>
+	<li>Completion: {{!!style}}</li>
+	<$list filter="[list[$:/temp/TiddlerCompletion/completion-data]]">
+		<li><<currentTiddler>></li>
+	</$list>
+</ul>
+</$list>
