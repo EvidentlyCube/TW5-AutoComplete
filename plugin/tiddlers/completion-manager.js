@@ -76,6 +76,15 @@ Keyboard handling utilities
 			event.stopImmediatePropagation();
 			event.preventDefault();
 			return;
+		} else if (event.key === "Enter") {
+			if (this.completingLastResults.length === 0) {
+				this.cancelCompletion();
+			} else {
+				this.insertCompletion(this.completingLastResults[this.completingLastSelection]);
+			}
+			event.stopImmediatePropagation();
+			event.preventDefault();
+			return;
 		}
 
 		let selectionStart = this.completingDom.selectionStart;
@@ -157,6 +166,21 @@ Keyboard handling utilities
 		this.repositionCompletion(this.completingDom.selectionStart);
 	}
 
+	CompletionManager.prototype.insertCompletion = function(tiddler) {
+		const sliceStart = this.completingLastSelection - this.completingTemplate.trigger.length;
+		const sliceEnd = this.completingDom.selectionStart;
+		const replacement = this.completingTemplate.insertTemplate.replace(/\${tiddler}/g, tiddler);
+		const caretTokenIndex = replacement.indexOf("${caret}");
+		const caretIndex = caretTokenIndex !== -1 ? caretTokenIndex : replacement.length;
+
+		this.completingDom.value = this.completingDom.value.substr(0, sliceStart)
+			+ replacement.replace(/\${caret}/g, '')
+			+ this.completingDom.value.substr(sliceEnd);
+		this.completingDom.selectionStart = caretIndex;
+		this.completingDom.selectionEnd = caretIndex;
+		this.cancelCompletion();
+	}
+
 	CompletionManager.prototype.refreshSearch = function(query) {
 		if (query === this.completingLastQuery) {
 			return;
@@ -214,7 +238,7 @@ Keyboard handling utilities
 				filter: tiddlerFields.filter,
 				trigger: trigger,
 				triggerLastCharacter: trigger.charAt(trigger.length - 1),
-				insertTemplate: tiddlerFields.insertTemplate
+				insertTemplate: insertTemplate
 			});
 		}
 	};
