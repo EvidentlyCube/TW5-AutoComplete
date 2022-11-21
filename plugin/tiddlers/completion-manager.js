@@ -24,7 +24,7 @@ Keyboard handling utilities
 		this.completingPosition = -1;
 		this.completingLastSelection = -1;
 		this.completingIndex = -1;
-		this.completingLastQuery = "";
+		this.completingLastQuery = null;
 		this.completingLastResults = [];
 
 		this.variableWidget = new widget.widget({
@@ -97,6 +97,7 @@ Keyboard handling utilities
 		if (selectionStart < this.completingPosition) {
 			this.cancelCompletion();
 		} else {
+			this.refreshSearchAtSelection(selectionStart);
 			this.repositionCompletion(selectionStart);
 		}
 	};
@@ -107,12 +108,16 @@ Keyboard handling utilities
 		}
 
 		if (!event.data) {
+			if (this.completingDom) {
+				this.refreshSearchAtSelection(this.completingDom.selectionStart);
+			}
 			return;
 		}
 
 		if (!this.completingDom) {
 			this.tryAssigningCompletion(event.target, event.data);
 		} else {
+			this.refreshSearchAtSelection(this.completingDom.selectionStart);
 			this.repositionCompletion(this.completingDom.selectionStart);
 		}
 	};
@@ -151,7 +156,7 @@ Keyboard handling utilities
 		this.completingPosition = -1;
 		this.completingLastSelection = -1;
 		this.completingIndex = -1;
-		this.completingLastQuery = "";
+		this.completingLastQuery = null;
 		this.completingLastResults = [];
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, null);
 	};
@@ -162,12 +167,12 @@ Keyboard handling utilities
 		this.completingPosition = startPosition;
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "1");
 
-		this.refreshSearch("te");
+		this.refreshSearch("");
 		this.repositionCompletion(this.completingDom.selectionStart);
 	}
 
 	CompletionManager.prototype.insertCompletion = function(tiddler) {
-		const sliceStart = this.completingLastSelection - this.completingTemplate.trigger.length;
+		const sliceStart = this.completingPosition - this.completingTemplate.trigger.length;
 		const sliceEnd = this.completingDom.selectionStart;
 		const replacement = this.completingTemplate.insertTemplate.replace(/\${tiddler}/g, tiddler);
 		const caretTokenIndex = replacement.indexOf("${caret}");
@@ -176,9 +181,15 @@ Keyboard handling utilities
 		this.completingDom.value = this.completingDom.value.substr(0, sliceStart)
 			+ replacement.replace(/\${caret}/g, '')
 			+ this.completingDom.value.substr(sliceEnd);
-		this.completingDom.selectionStart = caretIndex;
-		this.completingDom.selectionEnd = caretIndex;
+		this.completingDom.selectionStart = caretIndex + sliceStart;
+		this.completingDom.selectionEnd = caretIndex + sliceStart;
 		this.cancelCompletion();
+	}
+
+	CompletionManager.prototype.refreshSearchAtSelection = function(selectionPos) {
+		const query = this.completingDom.value.substring(this.completingPosition, selectionPos);
+
+		this.refreshSearch(query);
 	}
 
 	CompletionManager.prototype.refreshSearch = function(query) {
