@@ -201,7 +201,7 @@ Keyboard handling utilities
 				return query;
 			}
 			return "";
-		}});
+		}}).slice(0, 8);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.completingData.results);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
 	}
