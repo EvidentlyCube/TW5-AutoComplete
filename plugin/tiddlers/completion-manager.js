@@ -174,9 +174,16 @@ Keyboard handling utilities
 		const caretTokenIndex = replacement.indexOf("${caret}");
 		const caretIndex = caretTokenIndex !== -1 ? caretTokenIndex : replacement.length;
 
-		this.completingData.dom.value = this.completingData.dom.value.substr(0, sliceStart)
-			+ replacement.replace(/\${caret}/g, '')
-			+ this.completingData.dom.value.substr(sliceEnd);
+		this.completingData.dom.selectionStart = sliceStart;
+		this.completingData.dom.selectionEnd = sliceEnd;
+		if (document.execCommand) {
+			document.execCommand("insertText", false, replacement.replace(/\${caret}/g, ''));
+		} else {
+			this.completingData.dom.value = this.completingData.dom.value.substr(0, sliceStart)
+				+ replacement.replace(/\${caret}/g, '')
+				+ this.completingData.dom.value.substr(sliceEnd);
+
+		}
 		this.completingData.dom.selectionStart = caretIndex + sliceStart;
 		this.completingData.dom.selectionEnd = caretIndex + sliceStart;
 		this.cancelCompletion();
