@@ -27,6 +27,7 @@ Hooks the module
 
         require('$:/plugins/EvidentlyCube/TiddlerCompletion/edit-text-patch.js').patch(
 			manager.handleKeydownEvent.bind(manager),
+			manager.handleKeyupEvent.bind(manager),
 			manager.handleInputEvent.bind(manager),
 			manager.handleBlurEvent.bind(manager)
 		);

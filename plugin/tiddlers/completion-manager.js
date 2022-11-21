@@ -55,52 +55,41 @@ Keyboard handling utilities
 			return;
 		}
 
-		if (event.key === "Escape") {
-			this.cancelCompletion();
-			event.stopImmediatePropagation();
-			return false;
-		} else if (event.key === "ArrowUp") {
-			this.completingData.selectedResult--;
-			if (this.completingData.selectedResult < 1) {
-				this.completingData.selectedResult += this.completingData.results.length;
-			}
-			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
-			event.stopImmediatePropagation();
-			event.preventDefault();
-			return;
-		} else if (event.key === "ArrowDown") {
-			this.completingData.selectedResult++;
-			if (this.completingData.selectedResult > this.completingData.results.length) {
-				this.completingData.selectedResult -= this.completingData.results.length;
-			}
-			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
-			event.stopImmediatePropagation();
-			event.preventDefault();
-			return;
-		} else if (event.key === "Enter") {
-			if (this.completingData.results.length === 0) {
+		switch(event.key) {
+			case "Escape":
 				this.cancelCompletion();
-			} else {
-				this.insertCompletion(this.completingData.results[this.completingData.selectedResult]);
-			}
-			event.stopImmediatePropagation();
-			event.preventDefault();
-			return;
-		}
+				break;
 
-		let selectionStart = this.completingData.dom.selectionStart;
-		if (event.key === 'ArrowLeft') {
-			selectionStart--;
-		} else if (event.key === 'ArrowRight') {
-			selectionStart++;
-		}
+			case "ArrowUp":
+			case "ArrowDown":
+				this.changeSelectedResult(event.key === "ArrowUp" ? -1 : 1);
+				event.stopImmediatePropagation();
+				event.preventDefault();
+				break;
 
-		if (selectionStart < this.completingData.startPosition) {
-			this.cancelCompletion();
-		} else {
-			this.refreshSearchAtSelection(selectionStart);
+			case "Enter":
+				if (this.completingData.results.length === 0) {
+					this.cancelCompletion();
+				} else {
+					this.insertCompletion(this.completingData.results[this.completingData.selectedResult - 1]);
+				}
+				event.stopImmediatePropagation();
+				event.preventDefault();
+				break;
 		}
 	};
+
+	CompletionManager.prototype.handleKeyupEvent = function(event) {
+		if (!this.completingData.dom) {
+			return;
+		}
+
+		if (this.completingData.dom.selectionStart < this.completingData.startPosition) {
+			this.cancelCompletion();
+		} else {
+			this.refreshSearchAtSelection(this.completingData.dom.selectionStart);
+		}
+	}
 
 	CompletionManager.prototype.handleInputEvent = function(event) {
 		if (this.completingData.dom && event.target !== this.completingData.dom) {
@@ -123,7 +112,7 @@ Keyboard handling utilities
 
 	CompletionManager.prototype.handleBlurEvent = function(event) {
 		if (this.completingData.dom) {
-			// this.cancelCompletion();
+			this.cancelCompletion();
 		}
 	}
 
@@ -189,6 +178,18 @@ Keyboard handling utilities
 		this.cancelCompletion();
 	}
 
+	CompletionManager.prototype.changeSelectedResult = function(delta) {
+		this.completingData.selectedResult += delta;
+
+		if (this.completingData.selectedResult < 1) {
+			this.completingData.selectedResult += this.completingData.results.length;
+		} else if (this.completingData.selectedResult > this.completingData.results.length) {
+			this.completingData.selectedResult = 1;
+		}
+
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
+	}
+
 	CompletionManager.prototype.refreshSearchAtSelection = function(selectionPos) {
 		const query = this.completingData.dom.value.substring(this.completingData.startPosition, selectionPos);
 
@@ -196,9 +197,10 @@ Keyboard handling utilities
 	}
 
 	CompletionManager.prototype.refreshSearch = function(query) {
-		if (query === this.completingLastQuery) {
+		if (query === this.completingData.lastQuery) {
 			return;
 		}
+		this.completingData.lastQuery = query;
 		const filter = this.completingData.model.filter;
 		this.variableWidget.setVariable('query', query);
 

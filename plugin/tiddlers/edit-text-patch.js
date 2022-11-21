@@ -22,7 +22,7 @@ Hooks the module
 	const framedEngine = require('$:/core/modules/editor/engines/framed.js').FramedEngine;
 
 	let isPatched = false;
-	exports.patch = function (handleKeydown, handleInput, handleBlur) {
+	exports.patch = function (handleKeydown, handleKeyup, handleInput, handleBlur) {
 		if (isPatched) {
 			throw new Error("Simple editor cannot be patched twice");
 		}
@@ -31,7 +31,7 @@ Hooks the module
 
 		patchSimpleEngine(handleInput);
 		patchFramedEngine(handleInput);
-		patchEditTextWidget(handleKeydown, handleBlur);
+		patchEditTextWidget(handleKeydown, handleKeyup, handleBlur);
 	};
 
 	function patchSimpleEngine(handleInput) {
@@ -52,12 +52,13 @@ Hooks the module
 		};
 	}
 
-	function patchEditTextWidget(handleKeydown, handleBlur) {
+	function patchEditTextWidget(handleKeydown, handleKeyup, handleBlur) {
 		const oldRenderMethod = editTextWidget.prototype.render;
 		const oldHandleKeydownEvent = editTextWidget.prototype.handleKeydownEvent;
 		editTextWidget.prototype.render = function() {
 			const result = oldRenderMethod.apply(this, arguments);
 			this.engine.domNode.addEventListener('blur', handleBlur);
+			this.engine.domNode.addEventListener('keyup', handleKeyup);
 			if (!this.editShowToolbar) {
 				$tw.utils.addEventListeners(this.engine.domNode, [
 					{name: 'keydown', handlerObject: this, handlerMethod: 'handleKeydownEvent'}
