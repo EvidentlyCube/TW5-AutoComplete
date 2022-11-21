@@ -19,13 +19,14 @@ Keyboard handling utilities
 	function CompletionManager() {
 		var self = this;
 
-		this.completingTemplate =  null;
-		this.completingDom = null;
-		this.completingPosition = -1;
-		this.completingLastSelection = -1;
-		this.completingIndex = -1;
-		this.completingLastQuery = null;
-		this.completingLastResults = [];
+		this.completingData = {
+			model: null,
+			dom: null,
+			startPosition: -1,
+			lastQuery: null,
+			selectedResult: -1,
+			results: []
+		}
 
 		this.variableWidget = new widget.widget({
 			type: "widget",
@@ -35,18 +36,18 @@ Keyboard handling utilities
 			document: $tw.browser ? document : $tw.fakeDocument
 		});
 
-		this.templates = [];
-		this.templateTiddlers = [];
+		this.models = [];
+		this.modelTiddlers = [];
 		this.getCaretCoordinates = require('$:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js').getCaretCoordinates;
 
-		this.updateTemplateList(this.getTemplateTiddlerList());
+		this.updateModelList(this.getModelTiddlerList());
 		$tw.wiki.addEventListener("change", function (changes) {
-			self.handleChangeTemplateTiddlerList(changes);
+			self.handleChange(changes);
 		});
 	}
 
 	CompletionManager.prototype.handleKeydownEvent = function(event) {
-		if (!this.completingDom) {
+		if (!this.completingData.dom) {
 			if (event.key === " " && event.ctrlKey) {
 				this.tryAssigningCompletion(event.target, "");
 				event.stopImmediatePropagation();
@@ -59,79 +60,76 @@ Keyboard handling utilities
 			event.stopImmediatePropagation();
 			return false;
 		} else if (event.key === "ArrowUp") {
-			this.completingIndex--;
-			if (this.completingIndex < 1) {
-				this.completingIndex += this.completingLastResults.length;
+			this.completingData.selectedResult--;
+			if (this.completingData.selectedResult < 1) {
+				this.completingData.selectedResult += this.completingData.results.length;
 			}
-			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingIndex);
+			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
 			event.stopImmediatePropagation();
 			event.preventDefault();
 			return;
 		} else if (event.key === "ArrowDown") {
-			this.completingIndex++;
-			if (this.completingIndex > this.completingLastResults.length) {
-				this.completingIndex -= this.completingLastResults.length;
+			this.completingData.selectedResult++;
+			if (this.completingData.selectedResult > this.completingData.results.length) {
+				this.completingData.selectedResult -= this.completingData.results.length;
 			}
-			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingIndex);
+			$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
 			event.stopImmediatePropagation();
 			event.preventDefault();
 			return;
 		} else if (event.key === "Enter") {
-			if (this.completingLastResults.length === 0) {
+			if (this.completingData.results.length === 0) {
 				this.cancelCompletion();
 			} else {
-				this.insertCompletion(this.completingLastResults[this.completingLastSelection]);
+				this.insertCompletion(this.completingData.results[this.completingData.selectedResult]);
 			}
 			event.stopImmediatePropagation();
 			event.preventDefault();
 			return;
 		}
 
-		let selectionStart = this.completingDom.selectionStart;
+		let selectionStart = this.completingData.dom.selectionStart;
 		if (event.key === 'ArrowLeft') {
 			selectionStart--;
 		} else if (event.key === 'ArrowRight') {
 			selectionStart++;
 		}
 
-		if (selectionStart < this.completingPosition) {
+		if (selectionStart < this.completingData.startPosition) {
 			this.cancelCompletion();
 		} else {
 			this.refreshSearchAtSelection(selectionStart);
-			this.repositionCompletion(selectionStart);
 		}
 	};
 
 	CompletionManager.prototype.handleInputEvent = function(event) {
-		if (this.completingDom && event.target !== this.completingDom) {
+		if (this.completingData.dom && event.target !== this.completingData.dom) {
 			this.cancelCompletion();
 		}
 
 		if (!event.data) {
-			if (this.completingDom) {
-				this.refreshSearchAtSelection(this.completingDom.selectionStart);
+			if (this.completingData.dom) {
+				this.refreshSearchAtSelection(this.completingData.dom.selectionStart);
 			}
 			return;
 		}
 
-		if (!this.completingDom) {
+		if (!this.completingData.dom) {
 			this.tryAssigningCompletion(event.target, event.data);
 		} else {
-			this.refreshSearchAtSelection(this.completingDom.selectionStart);
-			this.repositionCompletion(this.completingDom.selectionStart);
+			this.refreshSearchAtSelection(this.completingData.dom.selectionStart);
 		}
 	};
 
 	CompletionManager.prototype.handleBlurEvent = function(event) {
-		if (this.completingDom) {
+		if (this.completingData.dom) {
 			// this.cancelCompletion();
 		}
 	}
 
 	CompletionManager.prototype.tryAssigningCompletion = function(dom, inputData) {
 		var self = this;
-		$tw.utils.each(this.templates, function(template) {
-			console.log(template);
+		$tw.utils.each(this.models, function(template) {
 			if (inputData && template.triggerLastCharacter !== inputData) {
 				return;
 			}
@@ -151,43 +149,41 @@ Keyboard handling utilities
 	}
 
 	CompletionManager.prototype.cancelCompletion = function() {
-		this.completingTemplate =  null;
-		this.completingDom = null;
-		this.completingPosition = -1;
-		this.completingLastSelection = -1;
-		this.completingIndex = -1;
-		this.completingLastQuery = null;
-		this.completingLastResults = [];
+		this.completingData.model =  null;
+		this.completingData.dom = null;
+		this.completingData.startPosition = -1;
+		this.completingData.selectedResult = -1;
+		this.completingData.results = [];
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, null);
 	};
 
 	CompletionManager.prototype.startCompletion = function(dom, template, startPosition) {
-		this.completingTemplate =  template;
-		this.completingDom = dom;
-		this.completingPosition = startPosition;
+		this.completingData.model =  template;
+		this.completingData.dom = dom;
+		this.completingData.startPosition = startPosition;
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "1");
 
 		this.refreshSearch("");
-		this.repositionCompletion(this.completingDom.selectionStart);
+		this.positionCompletionModal(this.completingData.dom.selectionStart);
 	}
 
 	CompletionManager.prototype.insertCompletion = function(tiddler) {
-		const sliceStart = this.completingPosition - this.completingTemplate.trigger.length;
-		const sliceEnd = this.completingDom.selectionStart;
-		const replacement = this.completingTemplate.insertTemplate.replace(/\${tiddler}/g, tiddler);
+		const sliceStart = this.completingData.startPosition - this.completingData.model.trigger.length;
+		const sliceEnd = this.completingData.dom.selectionStart;
+		const replacement = this.completingData.model.insertTemplate.replace(/\${tiddler}/g, tiddler);
 		const caretTokenIndex = replacement.indexOf("${caret}");
 		const caretIndex = caretTokenIndex !== -1 ? caretTokenIndex : replacement.length;
 
-		this.completingDom.value = this.completingDom.value.substr(0, sliceStart)
+		this.completingData.dom.value = this.completingData.dom.value.substr(0, sliceStart)
 			+ replacement.replace(/\${caret}/g, '')
-			+ this.completingDom.value.substr(sliceEnd);
-		this.completingDom.selectionStart = caretIndex + sliceStart;
-		this.completingDom.selectionEnd = caretIndex + sliceStart;
+			+ this.completingData.dom.value.substr(sliceEnd);
+		this.completingData.dom.selectionStart = caretIndex + sliceStart;
+		this.completingData.dom.selectionEnd = caretIndex + sliceStart;
 		this.cancelCompletion();
 	}
 
 	CompletionManager.prototype.refreshSearchAtSelection = function(selectionPos) {
-		const query = this.completingDom.value.substring(this.completingPosition, selectionPos);
+		const query = this.completingData.dom.value.substring(this.completingData.startPosition, selectionPos);
 
 		this.refreshSearch(query);
 	}
@@ -196,29 +192,23 @@ Keyboard handling utilities
 		if (query === this.completingLastQuery) {
 			return;
 		}
-		this.completingLastQuery = query;
-		const filter = this.completingTemplate.filter;
+		const filter = this.completingData.model.filter;
 		this.variableWidget.setVariable('query', query);
 
-		this.completingIndex = 1;
-		this.completingLastResults = $tw.wiki.filterTiddlers(filter, {getVariable: function(name) {
+		this.completingData.selectedResult = 1;
+		this.completingData.results = $tw.wiki.filterTiddlers(filter, {getVariable: function(name) {
 			if (name === "query") {
 				return query;
 			}
 			return "";
 		}});
-		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.completingLastResults);
-		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingIndex);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.completingData.results);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
 	}
 
-	CompletionManager.prototype.repositionCompletion = function(selectionStart) {
-		if (this.completingLastSelection === selectionStart) {
-			return;
-		}
-
-		this.completingLastSelection = selectionStart;
-		const baseCoords = this.completingDom.getBoundingClientRect();
-		const coords = this.getCaretCoordinates(this.completingDom, selectionStart);
+	CompletionManager.prototype.positionCompletionModal = function(selectionStart) {
+		const baseCoords = this.completingData.dom.getBoundingClientRect();
+		const coords = this.getCaretCoordinates(this.completingData.dom, selectionStart);
 		const newStyle = [
 			`left: ${(baseCoords.left + coords.left).toFixed(4)}px`,
 			`top: ${(baseCoords.top + coords.top + coords.height).toFixed(4)}px`
@@ -227,13 +217,13 @@ Keyboard handling utilities
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'style', null, newStyle);
 	}
 
-	CompletionManager.prototype.getTemplateTiddlerList = function () {
+	CompletionManager.prototype.getModelTiddlerList = function () {
 		return $tw.wiki.getTiddlersWithTag("$:/tags/plugin/CompletionManager");
 	};
 
-	CompletionManager.prototype.updateTemplateList = function (tiddlerList) {
-		this.templates = [];
-		this.templateTiddlers = tiddlerList;
+	CompletionManager.prototype.updateModelList = function (tiddlerList) {
+		this.models = [];
+		this.modelTiddlers = tiddlerList;
 		for (var i = 0; i < tiddlerList.length; i++) {
 			var title = tiddlerList[i],
 				tiddlerFields = $tw.wiki.getTiddler(title).fields,
@@ -245,7 +235,7 @@ Keyboard handling utilities
 				continue;
 			}
 
-			this.templates.push({
+			this.models.push({
 				filter: tiddlerFields.filter,
 				trigger: trigger,
 				triggerLastCharacter: trigger.charAt(trigger.length - 1),
@@ -254,8 +244,8 @@ Keyboard handling utilities
 		}
 	};
 
-	CompletionManager.prototype.handleChangeTemplateTiddlerList = function (changedTiddlers) {
-		this.updateTemplateList(this.getTemplateTiddlerList());
+	CompletionManager.prototype.handleChange = function (changedTiddlers) {
+		this.updateModelList(this.getModelTiddlerList());
 	};
 
 	exports.EC_CompletionManager = CompletionManager;
