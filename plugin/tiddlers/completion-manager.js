@@ -218,7 +218,7 @@ Keyboard handling utilities
 	}
 
 	CompletionManager.prototype.getModelTiddlerList = function () {
-		return $tw.wiki.getTiddlersWithTag("$:/tags/plugin/CompletionManager");
+		return $tw.wiki.getTiddlersWithTag("$:/tags/plugin/CompletionManager/Model");
 	};
 
 	CompletionManager.prototype.updateModelList = function (tiddlerList) {
