@@ -4,14 +4,15 @@ tags: $:/tags/PageTemplate
 \whitespace trim
 <$list filter="[{$:/temp/TiddlerCompletion/completion-data!!show}match[1]]" variable="ignore">
 <ul class="ec_tc-completion" style={{$:/temp/TiddlerCompletion/completion-data!!style}}>
-	<li class="label">Completion: {{!!style}}</li>
-	<$list filter="[list[$:/temp/TiddlerCompletion/completion-data]]" counter="index">
+	<$list filter="[list[$:/temp/TiddlerCompletion/completion-data]]" counter="index" emptyMessage="""<li class="label">No results</li>""">
 		<$list filter="[<index>match{$:/temp/TiddlerCompletion/completion-data!!index}]" variable="_" emptyMessage="""
 			<li class="link"><<currentTiddler>></li>
 		""">
 			<li class="link selected"><<currentTiddler>></li>
 		</$list>
-
+	</$list>
+	<$list filter="[{$:/temp/TiddlerCompletion/completion-data!!has-more}match[1]]">
+		<li class="label">...</li>
 	</$list>
 </ul>
 </$list>

@@ -44,8 +44,15 @@ Keyboard handling utilities
 		$tw.wiki.addEventListener("change", function (changes) {
 			self.handleChange(changes);
 		});
+		document.addEventListener('keydown', this.handleGlobalKeydownEvent.bind(this), true);
 	}
 
+	CompletionManager.prototype.handleGlobalKeydownEvent = function(event) {
+		if (this.completingData.dom && event.key === 'Escape') {
+			this.cancelCompletion();
+			event.stopPropagation();
+		}
+	}
 	CompletionManager.prototype.handleKeydownEvent = function(event) {
 		if (!this.completingData.dom) {
 			if (event.key === " " && event.ctrlKey) {
@@ -56,10 +63,6 @@ Keyboard handling utilities
 		}
 
 		switch(event.key) {
-			case "Escape":
-				this.cancelCompletion();
-				break;
-
 			case "ArrowUp":
 			case "ArrowDown":
 				this.changeSelectedResult(event.key === "ArrowUp" ? -1 : 1);
@@ -142,6 +145,7 @@ Keyboard handling utilities
 		this.completingData.dom = null;
 		this.completingData.startPosition = -1;
 		this.completingData.selectedResult = -1;
+		this.completingData.lastQuery = null;
 		this.completingData.results = [];
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, null);
 	};
@@ -150,6 +154,7 @@ Keyboard handling utilities
 		this.completingData.model =  template;
 		this.completingData.dom = dom;
 		this.completingData.startPosition = startPosition;
+		this.completingData.selectedResult = 1;
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "1");
 
 		this.refreshSearch("");
@@ -205,14 +210,16 @@ Keyboard handling utilities
 		this.variableWidget.setVariable('query', query);
 
 		this.completingData.selectedResult = 1;
-		this.completingData.results = $tw.wiki.filterTiddlers(filter, {getVariable: function(name) {
+		const results = $tw.wiki.filterTiddlers(filter, {getVariable: function(name) {
 			if (name === "query") {
 				return query;
 			}
 			return "";
-		}}).slice(0, 8);
+		}});
+		this.completingData.results = results.slice(0, 8);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.completingData.results);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'has-more', null, results.length > 8 ? 1 : 0);
 	}
 
 	CompletionManager.prototype.positionCompletionModal = function(selectionStart) {
