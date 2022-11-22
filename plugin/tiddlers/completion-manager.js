@@ -45,6 +45,15 @@ Keyboard handling utilities
 			self.handleChange(changes);
 		});
 		document.addEventListener('keydown', this.handleGlobalKeydownEvent.bind(this), true);
+		document.addEventListener('mousedown', this.handleGlobalClickEvent.bind(this), true);
+	}
+
+	CompletionManager.prototype.handleGlobalClickEvent = function(event) {
+		if (this.completingData.dom && event.target && event.target.classList.contains('ec_tc-link')) {
+			this.insertCompletion(event.target.innerText);
+			event.preventDefault();
+			event.stopPropagation();
+		}
 	}
 
 	CompletionManager.prototype.handleGlobalKeydownEvent = function(event) {

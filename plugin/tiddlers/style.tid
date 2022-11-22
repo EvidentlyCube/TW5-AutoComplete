@@ -16,12 +16,12 @@ type: text/vnd.tiddlywiki
 .ec_tc-completion .label {
 	color: <<colour muted-foreground>>;
 }
-.ec_tc-completion .link {
+.ec_tc-completion .ec_tc-link {
 	color: <<colour tiddler-link-foreground>>;
 	cursor: pointer;
 }
-.ec_tc-completion .link.selected,
-.ec_tc-completion .link:hover
+.ec_tc-completion .ec_tc-link.selected,
+.ec_tc-completion .ec_tc-link:hover
 {
 	background-color: <<colour tiddler-link-foreground>>;
 	color: <<colour background>>;
