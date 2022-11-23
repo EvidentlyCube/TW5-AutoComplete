@@ -30,34 +30,11 @@ caption: Tiddler Completion
 <tbody>
 <tr>
   <td align="center">
-    ''Open mode''<br/>
-    //What should happen with the results when opening the modal//
-  </td>
-  <td>
-    <$select tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="clear-on-open">
-      <option value="1">Clear results</option>
-      <option value="0">Show last results</option>
-    </$select>
-  </td>
-</tr>
-<tr>
-  <td align="center">
     ''Displayed results''<br/>
-    //Maximum number of results to display, must be between 1 and 99//
+    //Maximum number of results to display in the auto complete window, must be between 1 and 99//
   </td>
   <td>
-    <$edit-text tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="rows"/>
-  </td>
-</tr>
-<tr>
-  <td align="center">
-    ''Result row height''<br/>
-    //Height, in pixels, of a results row//<br/>
-    //Use `auto` if you don't want a fixed height//<br/>
-    //If you use a custom template you may want to declare a different static height for everything to fit snuggly//
-  </td>
-  <td>
-    <$edit-text tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="row-height"/>
+    <$edit-text tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="rows" default="8"/>
   </td>
 </tr>
 </tbody>

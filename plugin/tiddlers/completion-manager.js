@@ -38,8 +38,10 @@ Keyboard handling utilities
 
 		this.models = [];
 		this.modelTiddlers = [];
+		this.maxRows = 8;
 		this.getCaretCoordinates = require('$:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js').getCaretCoordinates;
 
+		this.loadConfig();
 		this.updateModelList(this.getModelTiddlerList());
 		$tw.wiki.addEventListener("change", function (changes) {
 			self.handleChange(changes);
@@ -230,10 +232,10 @@ Keyboard handling utilities
 			}
 			return "";
 		}});
-		this.completingData.results = results.slice(0, 8);
+		this.completingData.results = results.slice(0, this.maxRows);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.completingData.results);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.completingData.selectedResult);
-		$tw.wiki.setText(DATA_TIDDLER_NAME, 'has-more', null, results.length > 8 ? 1 : 0);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'has-more', null, results.length > this.maxRows ? 1 : 0);
 	}
 
 	CompletionManager.prototype.positionCompletionModal = function(selectionStart) {
@@ -274,7 +276,20 @@ Keyboard handling utilities
 		}
 	};
 
+	CompletionManager.prototype.loadConfig = function() {
+		var configTiddler = $tw.wiki.getTiddler('$:/plugins/EvidentlyCube/TiddlerCompletion/Config');
+
+		if (configTiddler) {
+			this.maxRows = configTiddler.fields.rows || 8;
+		} else {
+			this.maxRows = 8;
+		}
+	}
+
 	CompletionManager.prototype.handleChange = function (changedTiddlers) {
+		if ($tw.utils.hop(changedTiddlers,'$:/plugins/EvidentlyCube/TiddlerCompletion/Config')) {
+			this.loadConfig();
+		}
 		this.updateModelList(this.getModelTiddlerList());
 	};
 
