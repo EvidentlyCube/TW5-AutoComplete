@@ -1,0 +1,62 @@
+title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
+
+<div>
+<h1>Tiddler Completion trigger</h1>
+
+<p>This tiddler defines a trigger for Tiddler Completion plugin.</p>
+
+<div>
+	''Trigger:'' <$edit-text field="trigger" placeholder="Trigger..."/>
+	<p class="tc-muted">This defines the text which will trigger auto completion. For example `[[` will cause the auto completion to appear after you type `[[` in any text field.</p>
+</div>
+
+<div>
+	''Filter:'' <$edit-text field="filter" placeholder="Filter..." size="60"/>
+	<$list filter={{!!filter}}>
+		<span class="tc-error">
+			<$list filter={{{ [<currentTiddler>prefix[Filter error]] }}}>
+				<$text text=<<currentTiddler>>/>
+			</$list>
+		</span>
+	</$list>
+	<p class="tc-muted">The filter used to generate the list of options that will be displayed in the auto completion. Use variable `query` to inject the typed text.</p>
+</div>
+
+<div>
+''Template:'' <$edit-text field="template" placeholder="Template..." size="60"/>
+<p class="tc-muted">A template that is inserted when you select an option from auto completion. `$option$` will be replaced by the selected option, `$caret$` will put the caret on that position afterwards.</p>
+</div>
+
+<div>
+	<$checkbox field="auto-trigger-input" checked="1">&nbsp;Auto trigger on Inputs</$checkbox>
+	<p class="tc-muted">If checked auto completion will automatically open as soon as you type the ''trigger'' in a single-line text input; otherwise you will need to open it with a keyboard shortcut.</p>
+</div>
+
+<div>
+	<$checkbox field="auto-trigger-textarea" checked="1">&nbsp;Auto trigger on Text Areas</$checkbox>
+	<p class="tc-muted">If checked auto completion will automatically open as soon as you type the ''trigger'' in a multi-line text input; otherwise you will need to open it with a keyboard shortcut.</p>
+</div>
+
+<hr>
+
+<h1>Test the filter</h1>
+
+<$let temp=<<qualify "$:/temp/completion-test">>>
+
+	''Query:'' <$edit-text tag="input" tiddler=<<temp>> field="query" default="" placeholder="Test..."/>
+
+	<p class="tc-muted">Only the first 8 results will be displayed.</p>
+
+	<$let
+		query={{{ [<temp>get[query]] }}}
+		filter-suffix=" +[limit[8]]"
+		filter={{{ [{!!filter}addsuffix<filter-suffix>] }}}
+	>
+		<ul>
+		<$list filter=<<filter>> class="ec-tc-disabled" emptyMessage="""<li class="tc-muted">No results</li>""">
+			<li><$text text=<<currentTiddler>>/></li>
+		</$list>
+		</ul>
+	</$let>
+</$let>
+</div>

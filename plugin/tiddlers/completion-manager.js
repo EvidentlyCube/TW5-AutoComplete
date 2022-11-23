@@ -173,14 +173,14 @@ Keyboard handling utilities
 	CompletionManager.prototype.insertCompletion = function(tiddler) {
 		const sliceStart = this.completingData.startPosition - this.completingData.model.trigger.length;
 		const sliceEnd = this.completingData.dom.selectionStart;
-		const replacement = this.completingData.model.insertTemplate.replace(/\${tiddler}/g, tiddler);
+		const replacement = this.completingData.model.insertTemplate.replace(/\$option\$/g, tiddler);
 		const caretTokenIndex = replacement.indexOf("${caret}");
 		const caretIndex = caretTokenIndex !== -1 ? caretTokenIndex : replacement.length;
 
 		this.completingData.dom.selectionStart = sliceStart;
 		this.completingData.dom.selectionEnd = sliceEnd;
 		if (document.execCommand) {
-			document.execCommand("insertText", false, replacement.replace(/\${caret}/g, ''));
+			document.execCommand("insertText", false, replacement.replace(/\$caret\$/g, ''));
 		} else {
 			this.completingData.dom.value = this.completingData.dom.value.substr(0, sliceStart)
 				+ replacement.replace(/\${caret}/g, '')
@@ -243,7 +243,7 @@ Keyboard handling utilities
 	}
 
 	CompletionManager.prototype.getModelTiddlerList = function () {
-		return $tw.wiki.getTiddlersWithTag("$:/tags/plugin/CompletionManager/Trigger");
+		return $tw.wiki.getTiddlersWithTag("$:/tags/EC-CompletionManager/Trigger");
 	};
 
 	CompletionManager.prototype.updateModelList = function (tiddlerList) {
