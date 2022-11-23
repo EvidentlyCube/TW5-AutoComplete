@@ -241,7 +241,7 @@ Keyboard handling utilities
 		const coords = this.getCaretCoordinates(this.completingData.dom, selectionStart);
 		const newStyle = [
 			`left: ${(baseCoords.left + coords.left).toFixed(4)}px`,
-			`top: ${(baseCoords.top + coords.top + coords.height).toFixed(4)}px`
+			`top: ${(baseCoords.top + coords.top + coords.height + window.scrollY).toFixed(4)}px`
 		].join(";");
 
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'style', null, newStyle);
