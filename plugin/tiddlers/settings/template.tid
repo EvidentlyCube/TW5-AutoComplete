@@ -1,17 +1,31 @@
 title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 
-<div>
+\define must-be-defined(field name)
+<$list filter="[{!!$field$}match[]]">
+		<span class="tc-error">
+			$name$ must be defined
+		</span>
+	</$list>
+\end
+
+<div class="ec_tc-options">
 <h1>Tiddler Completion trigger</h1>
 
 <p>This tiddler defines a trigger for Tiddler Completion plugin.</p>
 
 <div>
-	''Trigger:'' <$edit-text field="trigger" placeholder="Trigger..."/>
+	''Trigger:'' <$edit-text class="ec-tc-disabled" field="trigger" placeholder="Trigger..."/>
+	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]field:trigger{!!trigger}] -[<currentTiddler>] +[limit[1]]">
+		<span class="tc-error">
+			Trigger already used in: <<currentTiddler>>
+		</span>
+	</$list>
+	<<must-be-defined "trigger" "Trigger">>
 	<p class="tc-muted">This defines the text which will trigger auto completion. For example `[[` will cause the auto completion to appear after you type `[[` in any text field.</p>
 </div>
 
 <div>
-	''Filter:'' <$edit-text field="filter" placeholder="Filter..." size="60"/>
+	''Filter:'' <$edit-text class="ec-tc-disabled" field="filter" placeholder="Filter..." size="60"/>
 	<$list filter={{!!filter}}>
 		<span class="tc-error">
 			<$list filter={{{ [<currentTiddler>prefix[Filter error]] }}}>
@@ -19,12 +33,14 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 			</$list>
 		</span>
 	</$list>
+	<<must-be-defined "filter" "Filter">>
 	<p class="tc-muted">The filter used to generate the list of options that will be displayed in the auto completion. Use variable `query` to inject the typed text.</p>
 </div>
 
 <div>
-''Template:'' <$edit-text field="template" placeholder="Template..." size="60"/>
-<p class="tc-muted">A template that is inserted when you select an option from auto completion. `$option$` will be replaced by the selected option, `$caret$` will put the caret on that position afterwards.</p>
+	''Template:'' <$edit-text class="ec-tc-disabled" field="template" placeholder="Template..." size="60"/>
+	<<must-be-defined "template" "Template">>
+	<p class="tc-muted">A template that is inserted when you select an option from auto completion. `$option$` will be replaced by the selected option, `$caret$` will put the caret on that position afterwards.</p>
 </div>
 
 <div>

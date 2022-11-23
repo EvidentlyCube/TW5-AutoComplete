@@ -7,6 +7,9 @@ caption: Tiddler Completion
 <$action-createtiddler
 	$basetitle={{{ [all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]count[]add[1]addprefix[$:/EvidentlyCube/Trigger/]] }}}
 	tags="$:/tags/EC-CompletionManager/Trigger"
+	filter="[all[tiddlers]!is[system]!is[draft]search:title<query>]"
+	template="[[$caret$|$tiddler$]]"
+	auto-trigger-textarea="1"
 >
 	<$action-navigate $to=<<createTiddler-title>> scroll="yes"/>
 </$action-createtiddler>
@@ -18,7 +21,7 @@ caption: Tiddler Completion
 	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]!is[draft]]">
 		<li><$link to=<<currentTiddler>>>{{!!trigger}}&nbsp;--&nbsp;<$text text=<<currentTiddler>>/></$link></li>
 	</$list>
-	<li><$button> actions=<<action-new-trigger>>>Create a new trigger</$button></li>
+	<li><$button actions=<<action-new-trigger>>>Create a new trigger</$button></li>
 </ul>
 
 ! Config
