@@ -43,7 +43,7 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 
 <$let temp=<<qualify "$:/temp/completion-test">>>
 
-	''Query:'' <$edit-text tag="input" tiddler=<<temp>> field="query" default="" placeholder="Test..."/>
+	''Query:'' <$edit-text tag="input" class="ec-tc-disabled" tiddler=<<temp>> field="query" default="" placeholder="Test..."/>
 
 	<p class="tc-muted">Only the first 8 results will be displayed.</p>
 
@@ -53,7 +53,7 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 		filter={{{ [{!!filter}addsuffix<filter-suffix>] }}}
 	>
 		<ul>
-		<$list filter=<<filter>> class="ec-tc-disabled" emptyMessage="""<li class="tc-muted">No results</li>""">
+		<$list filter=<<filter>> emptyMessage="""<li class="tc-muted">No results</li>""">
 			<li><$text text=<<currentTiddler>>/></li>
 		</$list>
 		</ul>

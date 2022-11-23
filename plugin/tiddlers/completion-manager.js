@@ -65,7 +65,7 @@ Keyboard handling utilities
 	CompletionManager.prototype.handleKeydownEvent = function(event) {
 		if (!this.completingData.dom) {
 			if (event.key === " " && event.ctrlKey) {
-				this.tryAssigningCompletion(event.target, "");
+				this.tryAssigningCompletion(event.target, "", true);
 				event.stopImmediatePropagation();
 			}
 			return;
@@ -116,7 +116,7 @@ Keyboard handling utilities
 		}
 
 		if (!this.completingData.dom) {
-			this.tryAssigningCompletion(event.target, event.data);
+			this.tryAssigningCompletion(event.target, event.data, false);
 		} else {
 			this.refreshSearchAtSelection(this.completingData.dom.selectionStart);
 		}
@@ -128,7 +128,12 @@ Keyboard handling utilities
 		}
 	}
 
-	CompletionManager.prototype.tryAssigningCompletion = function(dom, inputData) {
+	CompletionManager.prototype.tryAssigningCompletion = function(dom, inputData, isManualTrigger) {
+		// Prevent auto triggering completion if input element has certain class
+		if (dom.classList.contains('ec-tc-disabled') && !isManualTrigger) {
+			return;
+		}
+
 		var self = this;
 		$tw.utils.each(this.models, function(template) {
 			if (inputData && template.triggerLastCharacter !== inputData) {
