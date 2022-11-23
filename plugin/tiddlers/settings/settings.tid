@@ -1,0 +1,54 @@
+title: $:/plugins/EvidentlyCube/TidlderCompletion/Settings
+tags: $:/tags/EvidentlyCube/SettingsTab
+caption: Tiddler Completion
+
+\whitespace trim
+
+! Registered Triggers
+
+<ul>
+	<$list filter="[all[shadows+tiddlers]tag[$:/tags/plugin/CompletionManager/Trigger]!is[draft]]">
+		<li><$link to=<<currentTiddler>>>{{!!trigger}}&nbsp;--&nbsp;<$text text=<<currentTiddler>>/></$link></li>
+	</$list>
+	<li><$button>Create a new trigger</$button></li>
+</ul>
+
+! Config
+
+<table>
+<tbody>
+<tr>
+  <td align="center">
+    ''Open mode''<br/>
+    //What should happen with the results when opening the modal//
+  </td>
+  <td>
+    <$select tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="clear-on-open">
+      <option value="1">Clear results</option>
+      <option value="0">Show last results</option>
+    </$select>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    ''Displayed results''<br/>
+    //Maximum number of results to display, must be between 1 and 99//
+  </td>
+  <td>
+    <$edit-text tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="rows"/>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    ''Result row height''<br/>
+    //Height, in pixels, of a results row//<br/>
+    //Use `auto` if you don't want a fixed height//<br/>
+    //If you use a custom template you may want to declare a different static height for everything to fit snuggly//
+  </td>
+  <td>
+    <$edit-text tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="row-height"/>
+  </td>
+</tr>
+</tbody>
+</table>
+
