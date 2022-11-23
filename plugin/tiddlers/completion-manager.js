@@ -40,6 +40,7 @@ Keyboard handling utilities
 		this.triggerTiddlers = [];
 		this.maxRows = 8;
 		this.getCaretCoordinates = require('$:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js').getCaretCoordinates;
+		this.manualTriggerKeyInfo = null;
 
 		this.loadConfig();
 		this.updateTriggerList(this.getTriggerTiddlerList());
@@ -66,7 +67,7 @@ Keyboard handling utilities
 	}
 	CompletionManager.prototype.handleKeydownEvent = function(event) {
 		if (!this.completingData.dom) {
-			if (event.key === " " && event.ctrlKey) {
+			if ($tw.keyboardManager.checkKeyDescriptors(event, this.manualTriggerKeyInfo)) {
 				this.tryAssigningCompletion(event.target, "", true);
 				event.stopImmediatePropagation();
 			}
@@ -290,10 +291,25 @@ Keyboard handling utilities
 		} else {
 			this.maxRows = 8;
 		}
+
+		this.manualTriggerKeyInfo = $tw.keyboardManager.parseKeyDescriptors('((EC-TiddlerCompletion))',{
+			wiki: this.wiki
+		});
 	}
 
+	var WATCHED_TIDDLERS = [
+		'$:/plugins/EvidentlyCube/TiddlerCompletion/Config',
+		'$:/config/shortcuts/EC-TiddlerCompletion',
+		'$:/config/shortcuts-linux/EC-TiddlerCompletion',
+		'$:/config/shortcuts-not-linux/EC-TiddlerCompletion',
+		'$:/config/shortcuts-mac/EC-TiddlerCompletion',
+		'$:/config/shortcuts-not-mac/EC-TiddlerCompletion',
+		'$:/config/shortcuts-windows/EC-TiddlerCompletion',
+		'$:/config/shortcuts-not-windows/EC-TiddlerCompletion',
+	];
+
 	CompletionManager.prototype.handleChange = function (changedTiddlers) {
-		if ($tw.utils.hop(changedTiddlers,'$:/plugins/EvidentlyCube/TiddlerCompletion/Config')) {
+		if ($tw.utils.hop(changedTiddlers,WATCHED_TIDDLERS)) {
 			this.loadConfig();
 		}
 		this.updateTriggerList(this.getTriggerTiddlerList());
