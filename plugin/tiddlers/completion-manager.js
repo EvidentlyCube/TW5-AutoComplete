@@ -36,13 +36,13 @@ Keyboard handling utilities
 			document: $tw.browser ? document : $tw.fakeDocument
 		});
 
-		this.models = [];
-		this.modelTiddlers = [];
+		this.triggers = [];
+		this.triggerTiddlers = [];
 		this.maxRows = 8;
 		this.getCaretCoordinates = require('$:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js').getCaretCoordinates;
 
 		this.loadConfig();
-		this.updateModelList(this.getModelTiddlerList());
+		this.updateTriggerList(this.getTriggerTiddlerList());
 		$tw.wiki.addEventListener("change", function (changes) {
 			self.handleChange(changes);
 		});
@@ -137,19 +137,23 @@ Keyboard handling utilities
 		}
 
 		var self = this;
-		$tw.utils.each(this.models, function(template) {
-			if (inputData && template.triggerLastCharacter !== inputData) {
+		$tw.utils.each(this.triggers, function(triggerData) {
+			if (!isManualTrigger && !triggerData.autoTriggerInput && dom.tagName === 'INPUT') {
+				return;
+			} else if (!isManualTrigger && !triggerData.autoTriggerTextArea && dom.tagName === 'TEXTAREA') {
+				return
+			} else if (inputData && triggerData.triggerLastCharacter !== inputData) {
 				return;
 			}
 
-			const fragment = dom.value.substr(dom.selectionStart - template.trigger.length, template.trigger.length);
-			if (fragment !== template.trigger) {
+			const fragment = dom.value.substr(dom.selectionStart - triggerData.trigger.length, triggerData.trigger.length);
+			if (fragment !== triggerData.trigger) {
 				return;
 			}
 
 			self.startCompletion(
 				dom,
-				template,
+				triggerData,
 				dom.selectionStart
 			);
 			return false;
@@ -249,13 +253,13 @@ Keyboard handling utilities
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'style', null, newStyle);
 	}
 
-	CompletionManager.prototype.getModelTiddlerList = function () {
+	CompletionManager.prototype.getTriggerTiddlerList = function () {
 		return $tw.wiki.getTiddlersWithTag("$:/tags/EC-CompletionManager/Trigger");
 	};
 
-	CompletionManager.prototype.updateModelList = function (tiddlerList) {
-		this.models = [];
-		this.modelTiddlers = tiddlerList;
+	CompletionManager.prototype.updateTriggerList = function (tiddlerList) {
+		this.triggers = [];
+		this.triggerTiddlers = tiddlerList;
 		for (var i = 0; i < tiddlerList.length; i++) {
 			var title = tiddlerList[i],
 				tiddlerFields = $tw.wiki.getTiddler(title).fields,
@@ -267,11 +271,13 @@ Keyboard handling utilities
 				continue;
 			}
 
-			this.models.push({
+			this.triggers.push({
 				filter: tiddlerFields.filter,
 				trigger: trigger,
 				triggerLastCharacter: trigger.charAt(trigger.length - 1),
-				insertTemplate: insertTemplate
+				insertTemplate: insertTemplate,
+				autoTriggerInput: tiddlerFields['auto-trigger-input'],
+				autoTriggerTextArea: tiddlerFields['auto-trigger-textarea'],
 			});
 		}
 	};
@@ -290,7 +296,7 @@ Keyboard handling utilities
 		if ($tw.utils.hop(changedTiddlers,'$:/plugins/EvidentlyCube/TiddlerCompletion/Config')) {
 			this.loadConfig();
 		}
-		this.updateModelList(this.getModelTiddlerList());
+		this.updateTriggerList(this.getTriggerTiddlerList());
 	};
 
 	exports.EC_CompletionManager = CompletionManager;
