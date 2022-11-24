@@ -60,7 +60,7 @@ Autocompletion integration for Simple text editor
 
 			} else if (completionAPI.isManualTrigger(event)) {
 				var triggerData = completionAPI.getMatchingTrigger("", event.target.tagName, function (length) {
-					return event.target.value.substr(selectionStart - length, length);
+					return event.target.value.substr(event.target.selectionStart - length, length);
 				});
 
 				if (triggerData) {
@@ -101,10 +101,8 @@ Autocompletion integration for Simple text editor
 
 		function handleEngineInput(event) {
 			if (!completionAPI.isActive && event.data !== null && event.data !== "") {
-				selectionStart = event.target.selectionStart;
-
 				var triggerData = completionAPI.getMatchingTrigger(event.data, event.target.tagName, function (length) {
-					return event.target.value.substr(selectionStart - length, length);
+					return event.target.value.substr(event.target.selectionStart - length, length);
 				});
 
 				if (triggerData) {

@@ -65,7 +65,7 @@ API for the modal
 	};
 
 	EC_TiddlerCompletion.prototype.getMatchingTrigger = function (lastCharacter, inputType, getFragmentCallback) {
-		var ignoreType = lastCharacter === null;
+		var ignoreType = lastCharacter === null || lastCharacter === "";
 
 		for (let i = 0; i < this.options.triggers.length; i++) {
 			var triggerData = this.options.triggers[i];
