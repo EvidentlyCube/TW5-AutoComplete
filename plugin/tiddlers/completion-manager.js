@@ -312,7 +312,11 @@ Keyboard handling utilities
 		if ($tw.utils.hopArray(changedTiddlers,CONFIG_TIDDLERS)) {
 			this.loadConfig();
 		}
-		this.updateTriggerList(this.getTriggerTiddlerList());
+		const newTriggerTiddlerList = this.getTriggerTiddlerList();
+
+		if ($tw.utils.hopArray(changedTiddlers, newTriggerTiddlerList) || $tw.utils.hopArray(changedTiddlers, this.triggerTiddlers)) {
+			this.updateTriggerList(newTriggerTiddlerList);
+		}
 	};
 
 	exports.EC_CompletionManager = CompletionManager;
