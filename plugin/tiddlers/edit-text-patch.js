@@ -31,7 +31,9 @@ Hooks the module
 
 		patchSimpleEngine(handleInput);
 		patchFramedEngine(handleInput);
+		patchCodeMirror(handleInput);
 		patchEditTextWidget(handleKeydown, handleKeyup, handleBlur);
+		patchCodeMirrorWidget(handleKeydown, handleKeyup, handleBlur);
 	};
 
 	function patchSimpleEngine(handleInput) {
@@ -52,16 +54,30 @@ Hooks the module
 		};
 	}
 
+	function patchCodeMirror(handleInput) {
+		try {
+			const codeMirrorEngine = require("$:/plugins/tiddlywiki/codemirror/engine.js").CodeMirrorEngine
+			const oldHandleInputEvent = codeMirrorEngine.prototype.handleInputEvent;
+			codeMirrorEngine.prototype.handleInputEvent = function (event) {
+				if (handleInput(event) !== false) {
+					oldHandleInputEvent.apply(this, arguments)
+				}
+			};
+		} catch (e) {
+			// Code mirror is not available so nothing to do here
+		}
+	}
+
 	function patchEditTextWidget(handleKeydown, handleKeyup, handleBlur) {
 		const oldRenderMethod = editTextWidget.prototype.render;
 		const oldHandleKeydownEvent = editTextWidget.prototype.handleKeydownEvent;
-		editTextWidget.prototype.render = function() {
+		editTextWidget.prototype.render = function () {
 			const result = oldRenderMethod.apply(this, arguments);
 			this.engine.domNode.addEventListener('blur', handleBlur);
 			this.engine.domNode.addEventListener('keyup', handleKeyup);
 			if (!this.editShowToolbar) {
 				$tw.utils.addEventListeners(this.engine.domNode, [
-					{name: 'keydown', handlerObject: this, handlerMethod: 'handleKeydownEvent'}
+					{ name: 'keydown', handlerObject: this, handlerMethod: 'handleKeydownEvent' }
 				]);
 			}
 
@@ -72,5 +88,23 @@ Hooks the module
 				oldHandleKeydownEvent.apply(this, arguments)
 			}
 		};
+	}
+
+	function patchCodeMirrorWidget(handleKeydown, handleKeyup, handleBlur) {
+		try {
+			const codeMirrorWidget = require('$:/plugins/tiddlywiki/codemirror/edit-codemirror.js')['edit-codemirror'];
+			const oldRenderMethod = codeMirrorWidget.prototype.render;
+			codeMirrorWidget.prototype.render = function () {
+				const result = oldRenderMethod.apply(this, arguments);
+
+				this.engine.cm.on('keydown', function(a, b) {
+					b.preventDefault();
+				})
+
+				return result;
+			};
+		} catch (e) {
+			// Code mirror is not available so nothing to do here
+		}
 	}
 })();

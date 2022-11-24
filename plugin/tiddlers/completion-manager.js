@@ -41,6 +41,7 @@ Keyboard handling utilities
 		this.maxRows = 8;
 		this.getCaretCoordinates = require('$:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js').getCaretCoordinates;
 		this.manualTriggerKeyInfo = null;
+		this.iFramedEscapePreventCallback = null;
 
 		this.loadConfig();
 		this.updateTriggerList(this.getTriggerTiddlerList());
@@ -55,6 +56,7 @@ Keyboard handling utilities
 		if (this.completingData.dom && event.target && event.target.classList.contains('ec_tc-link')) {
 			this.insertCompletion(event.target.innerText);
 			event.preventDefault();
+			event.stopPropagation();
 			event.stopPropagation();
 		}
 	}
@@ -162,6 +164,8 @@ Keyboard handling utilities
 	}
 
 	CompletionManager.prototype.cancelCompletion = function() {
+		this.completingData.dom.getRootNode().removeEventListener('keydown', this.iFramedEscapePreventCallback, true);
+
 		this.completingData.model =  null;
 		this.completingData.dom = null;
 		this.completingData.startPosition = -1;
@@ -172,11 +176,18 @@ Keyboard handling utilities
 	};
 
 	CompletionManager.prototype.startCompletion = function(dom, template, startPosition) {
+		var self = this;
+		// Special handling to prevent escape in iframes triggering cancelling draft editing
+		this.iFramedEscapePreventCallback = function(event) {
+			self.handleGlobalKeydownEvent(event);
+		};
 		this.completingData.model =  template;
 		this.completingData.dom = dom;
 		this.completingData.startPosition = startPosition;
 		this.completingData.selectedResult = 1;
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "1");
+
+		this.completingData.dom.getRootNode().addEventListener('keydown', this.iFramedEscapePreventCallback, true);
 
 		this.refreshSearch("");
 		this.positionCompletionModal(this.completingData.dom.selectionStart);
