@@ -6,33 +6,49 @@ module-type: startup
 Hooks the module
 \*/
 
-(function(){
+(function () {
 
-    /*jslint node: false, browser: true */
-    /*global $tw: false */
-    "use strict";
+	/*jslint node: false, browser: true */
+	/*global $tw: false */
+	"use strict";
 
-    // Export name and synchronous status
-    exports.name = "evidentlycube-tiddlercompletion";
+	// Export name and synchronous status
+	exports.name = "evidentlycube-tiddlercompletion";
 	exports.platforms = ["browser"];
 	exports.before = ["render"];
 	exports.synchronous = true;
 
-    exports.startup = function() {
-        if ($tw.node) {
-            return;
-        }
+	exports.startup = function () {
+		if ($tw.node) {
+			return;
+		}
 
-		const manager = new $tw.EC_CompletionManager();
+		const monkeypatch = {
+			sequence: function(originalMethod, newMethod) {
+				return function() {
+					const result = originalMethod.apply(this, arguments);
 
-        require('$:/plugins/EvidentlyCube/TiddlerCompletion/edit-text-patch.js').patch(
-			manager.handleKeydownEvent.bind(manager),
-			manager.handleKeyupEvent.bind(manager),
-			manager.handleInputEvent.bind(manager),
-			manager.handleBlurEvent.bind(manager)
-		);
+					newMethod.apply(this, arguments);
 
+					return result;
+				}
+			},
+			preventable: function(originalMethod, newMethod) {
+				return function() {
+					if (newMethod.apply(this, arguments) !== false) {
+						return originalMethod.apply(this, arguments);
+					}
 
-    };
+					return undefined;
+				}
+			}
+		}
+
+		const EC_TiddlerCompletion = require('$:/plugins/EvidentlyCube/TiddlerCompletion/completion-api.js').EC_TiddlerCompletion;
+		const completionApi = new EC_TiddlerCompletion();
+
+		require('$:/plugins/EvidentlyCube/TiddlerCompletion/integration-core.js').patch(completionApi, monkeypatch);
+
+	};
 
 })();
