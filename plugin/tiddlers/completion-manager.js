@@ -186,13 +186,13 @@ Keyboard handling utilities
 		const sliceStart = this.completingData.startPosition - this.completingData.model.trigger.length;
 		const sliceEnd = this.completingData.dom.selectionStart;
 		const replacement = this.completingData.model.insertTemplate.replace(/\$option\$/g, tiddler);
-		const caretTokenIndex = replacement.indexOf("${caret}");
+		const caretTokenIndex = replacement.indexOf("$caret$");
 		const caretIndex = caretTokenIndex !== -1 ? caretTokenIndex : replacement.length;
 
 		this.completingData.dom.selectionStart = sliceStart;
 		this.completingData.dom.selectionEnd = sliceEnd;
-		if (document.execCommand) {
-			document.execCommand("insertText", false, replacement.replace(/\$caret\$/g, ''));
+		if (this.completingData.dom.getRootNode().execCommand) {
+			this.completingData.dom.getRootNode().execCommand("insertText", false, replacement.replace(/\$caret\$/g, ''));
 		} else {
 			this.completingData.dom.value = this.completingData.dom.value.substr(0, sliceStart)
 				+ replacement.replace(/\${caret}/g, '')
@@ -246,12 +246,34 @@ Keyboard handling utilities
 	CompletionManager.prototype.positionCompletionModal = function(selectionStart) {
 		const baseCoords = this.completingData.dom.getBoundingClientRect();
 		const coords = this.getCaretCoordinates(this.completingData.dom, selectionStart);
+		const iframeCoords = this.getIframeOffset(this.completingData.dom);
+
 		const newStyle = [
-			`left: ${(baseCoords.left + coords.left).toFixed(4)}px`,
-			`top: ${(baseCoords.top + coords.top + coords.height + window.scrollY).toFixed(4)}px`
+			`left: ${(baseCoords.left + coords.left + iframeCoords.left).toFixed(4)}px`,
+			`top: ${(baseCoords.top + coords.top + coords.height + iframeCoords.top + window.scrollY).toFixed(4)}px`
 		].join(";");
 
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'style', null, newStyle);
+	}
+
+	CompletionManager.prototype.getIframeOffset = function(dom) {
+		const root = dom.getRootNode();
+
+		if (root !== document) {
+			const parentDocument = root.defaultView.parent.document;
+			const iframes = parentDocument.querySelectorAll('iframe');
+			for (var i = 0; i < iframes.length; i++) {
+				const iframe = iframes[i];
+
+				if (iframe.contentDocument !== root) {
+					continue;
+				}
+
+				return iframe.getBoundingClientRect();
+			}
+		}
+
+		return {top: 0, left: 0};
 	}
 
 	CompletionManager.prototype.getTriggerTiddlerList = function () {
