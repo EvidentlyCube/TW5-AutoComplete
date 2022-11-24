@@ -105,6 +105,7 @@ API for the modal
 
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "1");
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'style', null, newStyle);
+		$tw.wiki.setText(DATA_TIDDLER_NAME, 'display-filter', null, trigger.displayFilter);
 	};
 
 	EC_TiddlerCompletion.prototype.finishCompletion = function () {
@@ -223,6 +224,7 @@ API for the modal
 
 			this.options.triggers.push({
 				filter: tiddlerFields.filter,
+				displayFilter: tiddlerFields['display-filter'],
 				trigger: trigger,
 				triggerLastCharacter: trigger.charAt(trigger.length - 1),
 				insertTemplate: insertTemplate,

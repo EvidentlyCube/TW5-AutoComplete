@@ -6,9 +6,13 @@ tags: $:/tags/PageTemplate
 <ul class="ec_tc-completion" style={{$:/temp/TiddlerCompletion/completion-data!!style}}>
 	<$list filter="[list[$:/temp/TiddlerCompletion/completion-data]]" counter="index" emptyMessage="""<li class="label">No results</li>""">
 		<$list filter="[<index>match{$:/temp/TiddlerCompletion/completion-data!!index}]" variable="_" emptyMessage="""
-			<li class="ec_tc-link" data-value=<<currentTiddler>>><<currentTiddler>></li>
+			<li class="ec_tc-link" data-value=<<currentTiddler>>>
+				<$text text={{{ [<currentTiddler>subfilter{$:/temp/TiddlerCompletion/completion-data!!display-filter}] }}} />
+			</li>
 		""">
-			<li class="ec_tc-link selected" data-value=<<currentTiddler>>><<currentTiddler>></li>
+			<li class="ec_tc-link selected" data-value=<<currentTiddler>>>
+				<$text text={{{ [<currentTiddler>subfilter{$:/temp/TiddlerCompletion/completion-data!!display-filter}] }}} />
+			</li>
 		</$list>
 	</$list>
 	<$list filter="[{$:/temp/TiddlerCompletion/completion-data!!has-more}match[1]]">

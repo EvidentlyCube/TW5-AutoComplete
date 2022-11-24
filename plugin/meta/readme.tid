@@ -10,8 +10,9 @@ type: text/vnd.tiddlywiki
 A versatile and easy to use auto completion for TiddlyWiki:
 
 * Define your own triggers
-** Customize the filter which retrieves the results
+** Customize the filter which retrieves the suggestions
 ** Customize template used for inserting the selected option
+** Customize how the suggestions look in the completion window
 ** Control auto-triggering separately for inputs and text areas
 * Clear interface for editing the triggers
 * Manually open the auto completion with customizable keyboard shortcut

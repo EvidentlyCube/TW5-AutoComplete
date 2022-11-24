@@ -6,7 +6,9 @@ caption: Tiddler Completion
 <$action-createtiddler
 	$basetitle={{{ [all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]count[]add[1]addprefix[$:/EvidentlyCube/Trigger/]] }}}
 	tags="$:/tags/EC-CompletionManager/Trigger"
+	trigger="[["
 	filter="[all[tiddlers]!is[system]!is[draft]search:title<query>]"
+	display-filter="[<currentTiddler>]"
 	template="[[$caret$|$option$]]"
 	auto-trigger-textarea="1"
 >
@@ -59,7 +61,7 @@ caption: Tiddler Completion
 <tr>
 	<td align="center">
 		''Keyboard Shortcut''<br/>
-		//Can be defined in <<comp-open-keyboard-shortcuts>>tab//
+		//Use this keyboard shortcut right in front of a trigger to manually open the completion window; can be changed in <<comp-open-keyboard-shortcuts>>tab//
 	</td>
 	<td>
 	<$list filter="$:/config/shortcuts/ $:/config/shortcuts-mac/ $:/config/shortcuts-not-mac/ $:/config/shortcuts-linux/ $:/config/shortcuts-not-linux/ $:/config/shortcuts-windows/ $:/config/shortcuts-not-windows/">

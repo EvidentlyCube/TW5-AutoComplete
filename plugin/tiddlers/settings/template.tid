@@ -44,6 +44,12 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 </div>
 
 <div>
+	''Display filter:'' <$edit-text class="ec-tc-disabled" field="display-filter" placeholder="Display filter..." size="60"/>
+	<<must-be-defined "display-filter" "Display filter">>
+	<p class="tc-muted">A filter that is used to display suggestions in the completion list. `<currentTiddler>` contains the suggestion being displayed.</p>
+</div>
+
+<div>
 	<$checkbox field="auto-trigger-input" checked="1">&nbsp;Auto trigger on Inputs</$checkbox>
 	<p class="tc-muted">If checked auto completion will automatically open as soon as you type the ''trigger'' in a single-line text input; otherwise you will need to open it with a keyboard shortcut.</p>
 </div>
@@ -72,7 +78,9 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 	>
 		<ul>
 		<$list filter=<<filter>> emptyMessage="""<li class="tc-muted">No results</li>""">
-			<li><$text text=<<currentTiddler>>/></li>
+			<li>
+				<$text text={{{ [<currentTiddler>subfilter{$:/temp/TiddlerCompletion/completion-data!!display-filter}] }}} />
+			</li>
 		</$list>
 		</ul>
 	</$let>
