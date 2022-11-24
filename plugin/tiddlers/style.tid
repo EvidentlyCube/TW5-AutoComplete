@@ -26,7 +26,12 @@ type: text/vnd.tiddlywiki
 	background-color: <<colour tiddler-link-foreground>>;
 	color: <<colour background>>;
 }
+
 .ec_tc-options .tc-error a {
 	color: white;
 	text-decoration: underline;
+}
+
+.ec_tc-pointer {
+	cursor: pointer;
 }
