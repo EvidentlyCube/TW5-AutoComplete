@@ -48,7 +48,11 @@ Hooks the module
 		const completionApi = new EC_TiddlerCompletion();
 
 		require('$:/plugins/EvidentlyCube/TiddlerCompletion/integration-core.js').patch(completionApi, monkeypatch);
-		require('$:/plugins/EvidentlyCube/TiddlerCompletion/integration-codemirror.js').patch(completionApi, monkeypatch);
+		try {
+			require('$:/plugins/EvidentlyCube/TiddlerCompletion/integration-codemirror.js').patch(completionApi, monkeypatch);
+		} catch (e) {
+			// Silently ignore if Code Mirror is not installed
+		}
 
 	};
 
