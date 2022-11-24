@@ -47,6 +47,13 @@ caption: Tiddler Completion
 	</td>
 	<td>
 		<$edit-text tiddler="$:/plugins/EvidentlyCube/TiddlerCompletion/Config" field="rows" default="8"/>
+		<$list filter="""
+			[{$:/plugins/EvidentlyCube/TiddlerCompletion/Config!!rows}floor[]compare:number:lt[1]]
+			[{$:/plugins/EvidentlyCube/TiddlerCompletion/Config!!rows}floor[]compare:number:gt[99]]
+			+[count[]!match[0]]
+		""">
+			<div class="tc-error">Must be a number between 1 and 99</div>
+		</$list>
 	</td>
 </tr>
 <tr>

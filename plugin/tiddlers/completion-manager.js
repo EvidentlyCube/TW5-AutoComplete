@@ -287,7 +287,7 @@ Keyboard handling utilities
 		var configTiddler = $tw.wiki.getTiddler('$:/plugins/EvidentlyCube/TiddlerCompletion/Config');
 
 		if (configTiddler) {
-			this.maxRows = configTiddler.fields.rows || 8;
+			this.maxRows = Math.floor(parseInt(configTiddler.fields.rows)) || 8;
 		} else {
 			this.maxRows = 8;
 		}
@@ -297,7 +297,7 @@ Keyboard handling utilities
 		});
 	}
 
-	var WATCHED_TIDDLERS = [
+	var CONFIG_TIDDLERS = [
 		'$:/plugins/EvidentlyCube/TiddlerCompletion/Config',
 		'$:/config/shortcuts/EC-TiddlerCompletion',
 		'$:/config/shortcuts-linux/EC-TiddlerCompletion',
@@ -309,7 +309,7 @@ Keyboard handling utilities
 	];
 
 	CompletionManager.prototype.handleChange = function (changedTiddlers) {
-		if ($tw.utils.hop(changedTiddlers,WATCHED_TIDDLERS)) {
+		if ($tw.utils.hopArray(changedTiddlers,CONFIG_TIDDLERS)) {
 			this.loadConfig();
 		}
 		this.updateTriggerList(this.getTriggerTiddlerList());
