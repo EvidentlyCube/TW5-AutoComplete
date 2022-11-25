@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/integration-core.js
+title: $:/plugins/EvidentlyCube/AutoComplete/integration-core.js
 type: application/javascript
 module-type: library
 
@@ -12,7 +12,7 @@ Autocompletion integration for Simple text editor
 		var editTextWidget = require('$:/core/modules/widgets/edit-text.js')['edit-text'];
 		var simpleEngine = require('$:/core/modules/editor/engines/simple.js').SimpleEngine;
 		var framedEngine = require('$:/core/modules/editor/engines/framed.js').FramedEngine;
-		var getBaseCaretCoordinates = require('$:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js').getCaretCoordinates;
+		var getBaseCaretCoordinates = require('$:/plugins/EvidentlyCube/AutoComplete/textarea-caret-position.js').getCaretCoordinates;
 
 		var selectionStart = -1;
 		var activeDom = null;

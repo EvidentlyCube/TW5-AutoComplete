@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/textarea-caret-position.js
+title: $:/plugins/EvidentlyCube/AutoComplete/textarea-caret-position.js
 type: application/javascript
 module-type: library
 

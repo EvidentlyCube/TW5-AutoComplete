@@ -1,8 +1,8 @@
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/Style
+title: $:/plugins/EvidentlyCube/AutoComplete/Style
 tags: $:/tags/Stylesheet
 type: text/vnd.tiddlywiki
 
-.ec_tc-completion {
+.ec_ac-completion {
 	position: absolute;
 	background: <<colour modal-background>>;
 	border: 2px solid <<colour modal-border>>;
@@ -10,28 +10,28 @@ type: text/vnd.tiddlywiki
 	box-shadow: "2px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-.ec_tc-completion li {
+.ec_ac-completion li {
 	list-style: none;
 }
-.ec_tc-completion .label {
+.ec_ac-completion .label {
 	color: <<colour muted-foreground>>;
 }
-.ec_tc-completion .ec_tc-link {
+.ec_ac-completion .ec_ac-link {
 	color: <<colour tiddler-link-foreground>>;
 	cursor: pointer;
 }
-.ec_tc-completion .ec_tc-link.selected,
-.ec_tc-completion .ec_tc-link:hover
+.ec_ac-completion .ec_ac-link.selected,
+.ec_ac-completion .ec_ac-link:hover
 {
 	background-color: <<colour tiddler-link-foreground>>;
 	color: <<colour background>>;
 }
 
-.ec_tc-options .tc-error a {
+.ec_ac-options .tc-error a {
 	color: white;
 	text-decoration: underline;
 }
 
-.ec_tc-pointer {
+.ec_ac-pointer {
 	cursor: pointer;
 }

@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/completion.js
+title: $:/plugins/EvidentlyCube/AutoComplete/completion.js
 type: application/javascript
 module-type: startup
 
@@ -44,12 +44,12 @@ Hooks the module
 			}
 		}
 
-		const EC_TiddlerCompletion = require('$:/plugins/EvidentlyCube/TiddlerCompletion/completion-api.js').EC_TiddlerCompletion;
+		const EC_TiddlerCompletion = require('$:/plugins/EvidentlyCube/AutoComplete/completion-api.js').EC_TiddlerCompletion;
 		const completionApi = new EC_TiddlerCompletion();
 
-		require('$:/plugins/EvidentlyCube/TiddlerCompletion/integration-core.js').patch(completionApi, monkeypatch);
+		require('$:/plugins/EvidentlyCube/AutoComplete/integration-core.js').patch(completionApi, monkeypatch);
 		try {
-			require('$:/plugins/EvidentlyCube/TiddlerCompletion/integration-codemirror.js').patch(completionApi, monkeypatch);
+			require('$:/plugins/EvidentlyCube/AutoComplete/integration-codemirror.js').patch(completionApi, monkeypatch);
 		} catch (e) {
 			// Silently ignore if Code Mirror is not installed
 		}

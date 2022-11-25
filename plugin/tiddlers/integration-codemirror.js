@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/integration-codemirror.js
+title: $:/plugins/EvidentlyCube/AutoComplete/integration-codemirror.js
 type: application/javascript
 module-type: library
 

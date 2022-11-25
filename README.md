@@ -1,4 +1,4 @@
-# Tiddler Completion [TiddlyWiki5 Plugin]
+# Auto Complete [TiddlyWiki5 Plugin]
 
 @TODO WORK IN PROGRESS, DO NOT USE
 
@@ -6,13 +6,17 @@
 
 A versatile, customizable and easy to use auto completion plugin for TiddlyWiki.
 
+* Auto complete anything you want:
+** Tiddler titles
+** Field values
+** Any filter result
 * Define your own triggers
 ** Customize the filter which retrieves the suggestions
-** Customize template used for inserting the selected option
-** Customize how the suggestions look in the completion window
+** Customize template used for inserting the selected suggestion
+** Customize how the suggestions are displayed in the completion window
 ** Control auto-triggering separately for inputs and text areas
 * Clear interface for editing the triggers
-* Manually open the auto completion with customizable keyboard shortcut
+* Manually open auto complete with customizable keyboard shortcut
 
 # How to use
 

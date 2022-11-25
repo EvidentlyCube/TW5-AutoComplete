@@ -1,21 +1,21 @@
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/window
+title: $:/plugins/EvidentlyCube/AutoComplete/window
 tags: $:/tags/PageTemplate
 
 \whitespace trim
-<$list filter="[{$:/temp/TiddlerCompletion/completion-data!!show}match[1]]" variable="ignore">
-<ul class="ec_tc-completion" style={{$:/temp/TiddlerCompletion/completion-data!!style}}>
-	<$list filter="[list[$:/temp/TiddlerCompletion/completion-data]]" counter="index" emptyMessage="""<li class="label">No results</li>""">
-		<$list filter="[<index>match{$:/temp/TiddlerCompletion/completion-data!!index}]" variable="_" emptyMessage="""
-			<li class="ec_tc-link" data-value=<<currentTiddler>>>
-				<$text text={{{ [<currentTiddler>subfilter{$:/temp/TiddlerCompletion/completion-data!!display-filter}] }}} />
+<$list filter="[{$:/temp/AutoComplete/completion-data!!show}match[1]]" variable="ignore">
+<ul class="ec_ac-completion" style={{$:/temp/AutoComplete/completion-data!!style}}>
+	<$list filter="[list[$:/temp/AutoComplete/completion-data]]" counter="index" emptyMessage="""<li class="label">No results</li>""">
+		<$list filter="[<index>match{$:/temp/AutoComplete/completion-data!!index}]" variable="_" emptyMessage="""
+			<li class="ec_ac-link" data-value=<<currentTiddler>>>
+				<$text text={{{ [<currentTiddler>subfilter{$:/temp/AutoComplete/completion-data!!display-filter}] }}} />
 			</li>
 		""">
-			<li class="ec_tc-link selected" data-value=<<currentTiddler>>>
-				<$text text={{{ [<currentTiddler>subfilter{$:/temp/TiddlerCompletion/completion-data!!display-filter}] }}} />
+			<li class="ec_ac-link selected" data-value=<<currentTiddler>>>
+				<$text text={{{ [<currentTiddler>subfilter{$:/temp/AutoComplete/completion-data!!display-filter}] }}} />
 			</li>
 		</$list>
 	</$list>
-	<$list filter="[{$:/temp/TiddlerCompletion/completion-data!!has-more}match[1]]">
+	<$list filter="[{$:/temp/AutoComplete/completion-data!!has-more}match[1]]">
 		<li class="label">...</li>
 	</$list>
 </ul>

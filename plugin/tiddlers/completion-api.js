@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/completion-api.js
+title: $:/plugins/EvidentlyCube/AutoComplete/completion-api.js
 type: application/javascript
 module-type: library
 
@@ -8,21 +8,21 @@ API for the modal
 \*/
 (function () {
 
-	const DATA_TIDDLER_NAME = "$:/temp/TiddlerCompletion/completion-data";
+	const DATA_TIDDLER_NAME = "$:/temp/AutoComplete/completion-data";
 
 	/*jslint node: true, browser: true */
 	/*global $tw: false */
 	"use strict";
 
 	var OPTIONS_TIDDLERS = [
-		'$:/plugins/EvidentlyCube/TiddlerCompletion/Config',
-		'$:/config/shortcuts/EC-TiddlerCompletion',
-		'$:/config/shortcuts-linux/EC-TiddlerCompletion',
-		'$:/config/shortcuts-not-linux/EC-TiddlerCompletion',
-		'$:/config/shortcuts-mac/EC-TiddlerCompletion',
-		'$:/config/shortcuts-not-mac/EC-TiddlerCompletion',
-		'$:/config/shortcuts-windows/EC-TiddlerCompletion',
-		'$:/config/shortcuts-not-windows/EC-TiddlerCompletion',
+		'$:/plugins/EvidentlyCube/AutoComplete/Config',
+		'$:/config/shortcuts/EC-AutoComplete',
+		'$:/config/shortcuts-linux/EC-AutoComplete',
+		'$:/config/shortcuts-not-linux/EC-AutoComplete',
+		'$:/config/shortcuts-mac/EC-AutoComplete',
+		'$:/config/shortcuts-not-mac/EC-AutoComplete',
+		'$:/config/shortcuts-windows/EC-AutoComplete',
+		'$:/config/shortcuts-not-windows/EC-AutoComplete',
 	];
 
 	function EC_TiddlerCompletion() {
@@ -57,7 +57,7 @@ API for the modal
 	};
 
 	EC_TiddlerCompletion.prototype._handleGlobalMouseDownCapture = function (event) {
-		if (this.isActive && event.target.classList.contains('ec_tc-link') && this.activeState.callbacks.onSelected) {
+		if (this.isActive && event.target.classList.contains('ec_ac-link') && this.activeState.callbacks.onSelected) {
 			this.activeState.callbacks.onSelected(event.target.getAttribute('data-value'));
 			event.stopImmediatePropagation();
 			event.preventDefault();
@@ -167,7 +167,7 @@ API for the modal
 	};
 
 	EC_TiddlerCompletion.prototype.getClicked = function (event) {
-		if (event.target && event.target.classList.contains('ec_tc-link')) {
+		if (event.target && event.target.classList.contains('ec_ac-link')) {
 			return event.target.innerText;
 		}
 
@@ -194,13 +194,13 @@ API for the modal
 	};
 
 	EC_TiddlerCompletion.prototype._loadOptions = function () {
-		var configTiddler = $tw.wiki.getTiddler('$:/plugins/EvidentlyCube/TiddlerCompletion/Config');
+		var configTiddler = $tw.wiki.getTiddler('$:/plugins/EvidentlyCube/AutoComplete/Config');
 
 		this.options.maxRows = configTiddler
 			? Math.floor(parseInt(configTiddler.fields.rows)) || 8
 			: 8;
 
-		this.options.manualTriggerKeyInfo = $tw.keyboardManager.parseKeyDescriptors('((EC-TiddlerCompletion))', { wiki: this.wiki });
+		this.options.manualTriggerKeyInfo = $tw.keyboardManager.parseKeyDescriptors('((EC-AutoComplete))', { wiki: this.wiki });
 	}
 
 	EC_TiddlerCompletion.prototype._getTriggerTiddlerList = function () {

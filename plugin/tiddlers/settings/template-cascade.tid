@@ -1,5 +1,5 @@
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/template-cascade
+title: $:/plugins/EvidentlyCube/AutoComplete/template-cascade
 tags: $:/tags/ViewTemplateBodyFilter
 list-after: $:/config/ViewTemplateBodyFilters/system
 
-[tag[$:/tags/EC-CompletionManager/Trigger]then[$:/plugins/EvidentlyCube/TiddlerCompletion/template]]
+[tag[$:/tags/EC-CompletionManager/Trigger]then[$:/plugins/EvidentlyCube/AutoComplete/template]]

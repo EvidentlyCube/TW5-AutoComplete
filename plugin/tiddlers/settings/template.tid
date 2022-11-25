@@ -1,4 +1,4 @@
-title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
+title: $:/plugins/EvidentlyCube/AutoComplete/template
 
 \define must-be-defined(field name)
 <$list filter="[{!!$field$}match[]]">
@@ -8,7 +8,7 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 </$list>
 \end
 
-<div class="ec_tc-options">
+<div class="ec_ac-options">
 <h1>Tiddler Completion trigger</h1>
 
 <p>This tiddler defines a trigger for Tiddler Completion plugin.</p>
@@ -65,7 +65,7 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 
 <$let
 	temp=<<qualify "$:/temp/completion-test">>
-	rows={{{ [{$:/plugins/EvidentlyCube/TiddlerCompletion/Config!!rows}floor[]!match[0]else[8]min[99]max[1]] }}}
+	rows={{{ [{$:/plugins/EvidentlyCube/AutoComplete/Config!!rows}floor[]!match[0]else[8]min[99]max[1]] }}}
 >
 	''Query:'' <$edit-text tag="input" class="ec-tc-disabled" tiddler=<<temp>> field="query" default="" placeholder="Test..."/>
 
@@ -79,7 +79,7 @@ title: $:/plugins/EvidentlyCube/TiddlerCompletion/template
 		<ul>
 		<$list filter=<<filter>> emptyMessage="""<li class="tc-muted">No results</li>""">
 			<li>
-				<$text text={{{ [<currentTiddler>subfilter{$:/temp/TiddlerCompletion/completion-data!!display-filter}] }}} />
+				<$text text={{{ [<currentTiddler>subfilter{$:/temp/AutoComplete/completion-data!!display-filter}] }}} />
 			</li>
 		</$list>
 		</ul>
