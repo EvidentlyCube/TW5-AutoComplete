@@ -1,9 +1,5 @@
 # Auto Complete [TiddlyWiki5 Plugin]
 
-@TODO WORK IN PROGRESS, DO NOT USE
-
-----
-
 A versatile, customizable and easy to use auto completion plugin for TiddlyWiki.
 
 * Auto complete anything you want:
