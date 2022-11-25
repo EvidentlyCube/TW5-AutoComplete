@@ -42,7 +42,10 @@ type: text/vnd.tiddlywiki
 }
 .ec_ac-options input:not([type="checkbox"]),
 .ec_ac-options textarea {
+	display: block;
 	width: 100%;
+	margin-top: 7px;
+	margin-bottom: 7px;
 }
 
 .ec_ac-options .tc-error a {

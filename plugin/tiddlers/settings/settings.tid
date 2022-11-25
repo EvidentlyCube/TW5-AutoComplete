@@ -29,6 +29,8 @@ caption: Auto Complete
 
 \end
 
+Configuration for the [[Auto Complete|$:/plugins/EvidentlyCube/AutoComplete]] plugin.
+
 ! Registered Triggers
 
 <ul>
@@ -41,6 +43,9 @@ caption: Auto Complete
 ! Config
 
 <table>
+<colgroup>
+	<col width="60%"/>
+</colgroup>
 <tbody>
 <tr>
 	<td align="center">

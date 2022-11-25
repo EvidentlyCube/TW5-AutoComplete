@@ -41,9 +41,7 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 			A description of this trigger to make it easier to keep things clean.
 		</p>
 	</td>
-	<td>
-		<$edit-text class="ec-tc-disabled" field="text" default="" placeholder="Trigger..."/>
-	</td>
+	<td><$edit-text class="ec-tc-disabled" field="text" default="" placeholder="Trigger..."/></td>
 </tr>
 <tr>
 	<td align="center">
