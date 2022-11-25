@@ -27,6 +27,13 @@ A versatile, customizable and easy to use auto completion plugin for TiddlyWiki.
 * At any time press <kbd>Ctrl+Space</kbd> right in front of a defined trigger to open the completion window manually
 ** Or use a different keyboard shortcut you defined
 
+## Demo:
+
+See the demo [here](https://evidentlycube.github.io/TW5-PluginShowcase/#Auto%20Complete).
+
+## Installation:
+
+Drag [this link](https://evidentlycube.github.io/TW5-PluginShowcase/#%24%3A%2Fplugins%2FEvidentlyCube%2FAutoComplete) into your TiddlyWiki 5 page/tab.
 # Screenshots
 
 **Completion in action:**<br>
@@ -46,4 +53,3 @@ A versatile, customizable and easy to use auto completion plugin for TiddlyWiki.
 
 Work in progress, do not use yet
 
-@TODO STUB
