@@ -2,6 +2,12 @@ title: $:/plugins/EvidentlyCube/AutoComplete/Style
 tags: $:/tags/Stylesheet
 type: text/vnd.tiddlywiki
 
+.ec_ac-muted {
+	color: <<colour foreground>>;
+	opacity: 0.75;
+	font-style: italic;
+}
+
 .ec_ac-completion {
 	position: absolute;
 	background: <<colour modal-background>>;
@@ -25,6 +31,18 @@ type: text/vnd.tiddlywiki
 {
 	background-color: <<colour tiddler-link-foreground>>;
 	color: <<colour background>>;
+}
+
+.ec_ac-options table {
+	width: 100%;
+}
+
+.ec_ac-options p {
+	margin-top: 0;
+}
+.ec_ac-options input:not([type="checkbox"]),
+.ec_ac-options textarea {
+	width: 100%;
 }
 
 .ec_ac-options .tc-error a {
