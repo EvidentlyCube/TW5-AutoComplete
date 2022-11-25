@@ -25,7 +25,7 @@ API for the modal
 		'$:/config/shortcuts-not-windows/EC-AutoComplete',
 	];
 
-	function EC_TiddlerCompletion() {
+	function EC_AutoComplete() {
 		this.isActive = false;
 		this.activeState = {
 			trigger: null,
@@ -48,7 +48,7 @@ API for the modal
 		$tw.wiki.addEventListener("change", this._handleChange.bind(this));
 	};
 
-	EC_TiddlerCompletion.prototype._handleGlobalKeydownCapture = function (event) {
+	EC_AutoComplete.prototype._handleGlobalKeydownCapture = function (event) {
 		if (this.isActive && event.key === "Escape") {
 			this.finishCompletion();
 			event.stopImmediatePropagation();
@@ -56,7 +56,7 @@ API for the modal
 		}
 	};
 
-	EC_TiddlerCompletion.prototype._handleGlobalMouseDownCapture = function (event) {
+	EC_AutoComplete.prototype._handleGlobalMouseDownCapture = function (event) {
 		if (this.isActive && event.target.classList.contains('ec_ac-link') && this.activeState.callbacks.onSelected) {
 			this.activeState.callbacks.onSelected(event.target.getAttribute('data-value'));
 			event.stopImmediatePropagation();
@@ -64,7 +64,7 @@ API for the modal
 		}
 	};
 
-	EC_TiddlerCompletion.prototype.getMatchingTrigger = function (lastCharacter, inputType, getFragmentCallback) {
+	EC_AutoComplete.prototype.getMatchingTrigger = function (lastCharacter, inputType, getFragmentCallback) {
 		var ignoreType = lastCharacter === null || lastCharacter === "";
 
 		for (let i = 0; i < this.options.triggers.length; i++) {
@@ -91,7 +91,7 @@ API for the modal
 		return null;
 	}
 
-	EC_TiddlerCompletion.prototype.startCompletion = function (trigger, position, callbacks) {
+	EC_AutoComplete.prototype.startCompletion = function (trigger, position, callbacks) {
 		this.isActive = true;
 		this.activeState.trigger = trigger;
 		this.activeState.lastQuery = null;
@@ -108,7 +108,7 @@ API for the modal
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'display-filter', null, trigger.displayFilter);
 	};
 
-	EC_TiddlerCompletion.prototype.finishCompletion = function () {
+	EC_AutoComplete.prototype.finishCompletion = function () {
 		if (this.activeState.callbacks.onFinish) {
 			this.activeState.callbacks.onFinish();
 		}
@@ -122,7 +122,7 @@ API for the modal
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "0");
 	};
 
-	EC_TiddlerCompletion.prototype.updateQuery = function (query) {
+	EC_AutoComplete.prototype.updateQuery = function (query) {
 		if (query === this.activeState.lastQuery) {
 			return;
 		}
@@ -138,7 +138,7 @@ API for the modal
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'has-more', null, results.length > this.options.maxRows ? 1 : 0);
 	};
 
-	EC_TiddlerCompletion.prototype.changeSelection = function (delta) {
+	EC_AutoComplete.prototype.changeSelection = function (delta) {
 		this.activeState.selectedResult += delta
 
 		if (this.activeState.selectedResult < 0) {
@@ -150,7 +150,7 @@ API for the modal
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, this.activeState.selectedResult + 1);
 	};
 
-	EC_TiddlerCompletion.prototype.getCompletedTemplate = function (option) {
+	EC_AutoComplete.prototype.getCompletedTemplate = function (option) {
 		const withReplacedOption = this.activeState.trigger.insertTemplate.replace(/\$option\$/g, option);
 		const caretTokenIndex = withReplacedOption.indexOf("$caret$");
 		const withRemovedCaret = withReplacedOption.replace(/\$caret\$/g, '');
@@ -162,11 +162,11 @@ API for the modal
 		};
 	}
 
-	EC_TiddlerCompletion.prototype.getSelected = function () {
+	EC_AutoComplete.prototype.getSelected = function () {
 		return this.activeState.results[this.activeState.selectedResult] || "";
 	};
 
-	EC_TiddlerCompletion.prototype.getClicked = function (event) {
+	EC_AutoComplete.prototype.getClicked = function (event) {
 		if (event.target && event.target.classList.contains('ec_ac-link')) {
 			return event.target.innerText;
 		}
@@ -174,11 +174,11 @@ API for the modal
 		return null;
 	};
 
-	EC_TiddlerCompletion.prototype.isManualTrigger = function (event) {
+	EC_AutoComplete.prototype.isManualTrigger = function (event) {
 		return $tw.keyboardManager.checkKeyDescriptors(event, this.options.manualTriggerKeyInfo);
 	}
 
-	EC_TiddlerCompletion.prototype._handleChange = function (changedTiddlers) {
+	EC_AutoComplete.prototype._handleChange = function (changedTiddlers) {
 		if ($tw.utils.hopArray(changedTiddlers, OPTIONS_TIDDLERS)) {
 			this._loadOptions();
 		}
@@ -193,7 +193,7 @@ API for the modal
 		}
 	};
 
-	EC_TiddlerCompletion.prototype._loadOptions = function () {
+	EC_AutoComplete.prototype._loadOptions = function () {
 		var configTiddler = $tw.wiki.getTiddler('$:/plugins/EvidentlyCube/AutoComplete/Config');
 
 		this.options.maxRows = configTiddler
@@ -203,11 +203,11 @@ API for the modal
 		this.options.manualTriggerKeyInfo = $tw.keyboardManager.parseKeyDescriptors('((EC-AutoComplete))', { wiki: this.wiki });
 	}
 
-	EC_TiddlerCompletion.prototype._getTriggerTiddlerList = function () {
-		return $tw.wiki.getTiddlersWithTag("$:/tags/EC-CompletionManager/Trigger");
+	EC_AutoComplete.prototype._getTriggerTiddlerList = function () {
+		return $tw.wiki.getTiddlersWithTag("$:/tags/EC/AutoComplete/Trigger");
 	};
 
-	EC_TiddlerCompletion.prototype._updateTriggerList = function (tiddlerList) {
+	EC_AutoComplete.prototype._updateTriggerList = function (tiddlerList) {
 		this.options.triggers = [];
 		this.options.triggerTiddlers = tiddlerList;
 
@@ -245,5 +245,5 @@ API for the modal
 		}
 	}
 
-	exports.EC_TiddlerCompletion = EC_TiddlerCompletion;
+	exports.EC_AutoComplete = EC_AutoComplete;
 })();

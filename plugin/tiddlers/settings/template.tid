@@ -9,13 +9,13 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 \end
 
 <div class="ec_ac-options">
-<h1>Tiddler Completion trigger</h1>
+<h1>Auto complete trigger</h1>
 
-<p>This tiddler defines a trigger for Tiddler Completion plugin.</p>
+<p>This tiddler defines a trigger for Auto Complete plugin.</p>
 
 <div>
 	''Trigger:'' <$edit-text class="ec-tc-disabled" field="trigger" placeholder="Trigger..."/>
-	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]field:trigger{!!trigger}] -[<currentTiddler>] +[limit[1]]">
+	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]field:trigger{!!trigger}] -[<currentTiddler>] +[limit[1]]">
 		<span class="tc-error">
 			Trigger already used in: <<currentTiddler>>
 		</span>
@@ -45,6 +45,13 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 
 <div>
 	''Display filter:'' <$edit-text class="ec-tc-disabled" field="display-filter" placeholder="Display filter..." size="60"/>
+	<$list filter={{!!display-filter}}>
+		<span class="tc-error">
+			<$list filter={{{ [<currentTiddler>prefix[Filter error]] }}}>
+				<$text text=<<currentTiddler>>/>
+			</$list>
+		</span>
+	</$list>
 	<<must-be-defined "display-filter" "Display filter">>
 	<p class="tc-muted">A filter that is used to display suggestions in the completion list. `<currentTiddler>` contains the suggestion being displayed.</p>
 </div>
@@ -74,12 +81,13 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 	<$let
 		query={{{ [<temp>get[query]] }}}
 		filter-suffix=" +[limit<rows>]"
+		display-filter={{!!display-filter}}
 		filter={{{ [{!!filter}addsuffix<filter-suffix>] }}}
 	>
 		<ul>
 		<$list filter=<<filter>> emptyMessage="""<li class="tc-muted">No results</li>""">
 			<li>
-				<$text text={{{ [<currentTiddler>subfilter{$:/temp/AutoComplete/completion-data!!display-filter}] }}} />
+				<$text text={{{ [<currentTiddler>subfilter<display-filter>] }}} />
 			</li>
 		</$list>
 		</ul>

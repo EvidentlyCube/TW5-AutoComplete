@@ -1,11 +1,11 @@
 title: $:/plugins/EvidentlyCube/AutoComplete/Settings
 tags: $:/tags/EvidentlyCube/SettingsTab
-caption: Tiddler Completion
+caption: Auto Complete
 
 \define action-new-trigger()
 <$action-createtiddler
-	$basetitle={{{ [all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]count[]add[1]addprefix[$:/EvidentlyCube/Trigger/]] }}}
-	tags="$:/tags/EC-CompletionManager/Trigger"
+	$basetitle={{{ [all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]count[]add[1]addprefix[$:/EvidentlyCube/Trigger/]] }}}
+	tags="$:/tags/EC/AutoComplete/Trigger"
 	trigger="[["
 	filter="[all[tiddlers]!is[system]!is[draft]search:title<query>]"
 	display-filter="[<currentTiddler>]"
@@ -32,7 +32,7 @@ caption: Tiddler Completion
 ! Registered Triggers
 
 <ul>
-	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC-CompletionManager/Trigger]!is[draft]]">
+	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]!is[draft]]">
 		<li><$link to=<<currentTiddler>>><$text text=<<currentTiddler>>/></$link> (Trigger <code>{{!!trigger}}</code>)</li>
 	</$list>
 	<li><$button actions=<<action-new-trigger>>>Create a new trigger</$button></li>

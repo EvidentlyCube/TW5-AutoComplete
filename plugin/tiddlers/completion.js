@@ -44,8 +44,8 @@ Hooks the module
 			}
 		}
 
-		const EC_TiddlerCompletion = require('$:/plugins/EvidentlyCube/AutoComplete/completion-api.js').EC_TiddlerCompletion;
-		const completionApi = new EC_TiddlerCompletion();
+		const EC_AutoComplete = require('$:/plugins/EvidentlyCube/AutoComplete/completion-api.js').EC_AutoComplete;
+		const completionApi = new EC_AutoComplete();
 
 		require('$:/plugins/EvidentlyCube/AutoComplete/integration-core.js').patch(completionApi, monkeypatch);
 		try {
