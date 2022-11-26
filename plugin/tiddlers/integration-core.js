@@ -158,6 +158,8 @@ Autocompletion integration for Simple text editor
 
 		function getCaretCoordinates() {
 			const baseCoords = activeDom.getBoundingClientRect();
+			const document = activeDom.getRootNode();
+			const window = document.defaultView;
 			const coords = getBaseCaretCoordinates(activeDom, selectionStart);
 			const iframeCoords = getIframeOffset(activeDom);
 
