@@ -163,7 +163,11 @@ API for the modal
 	}
 
 	EC_AutoComplete.prototype.getSelected = function () {
-		return this.activeState.results[this.activeState.selectedResult] || "";
+		const selectedResult = this.activeState.results[this.activeState.selectedResult] || "";
+
+		return selectedResult
+			? $tw.wiki.filterTiddlers(this.activeState.trigger.transformFilter,getVariableFauxWidget('currentTiddler', selectedResult))
+			: "";
 	};
 
 	EC_AutoComplete.prototype.getClicked = function (event) {
@@ -225,6 +229,7 @@ API for the modal
 			this.options.triggers.push({
 				filter: tiddlerFields.filter,
 				displayFilter: tiddlerFields['display-filter'],
+				transformFilter: tiddlerFields['transform-filter'] || "[<currentTiddler>]",
 				trigger: trigger,
 				triggerLastCharacter: trigger.charAt(trigger.length - 1),
 				insertTemplate: insertTemplate,

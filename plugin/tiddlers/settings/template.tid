@@ -63,9 +63,9 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 </tr>
 <tr>
 	<td align="center">
-		''Filter:''<br/>
+		''Suggestion Filter:''<br/>
 		<p class="ec_ac-muted">
-			The filter used to generate the list of options that will be displayed in the auto completion.<br/>
+			This filter generates the list of options that will be displayed in the auto completion.<br/>
 			Use variable `query` to inject the typed text.
 		</p>
 	</td>
@@ -79,7 +79,8 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 	<td align="center">
 		''Display Filter:''<br/>
 		<p class="ec_ac-muted">
-			A filter that is used to display suggestions in the completion list.<br/>
+			Advanced feature!<br/>
+			Transforms how the suggestion will be displayed in auto complete window.<br/>
 			`<currentTiddler>` contains the suggestion being displayed.
 		</p>
 	</td>
@@ -87,6 +88,21 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 		<$edit-text class="ec-tc-disabled" tag="textarea" field="display-filter" placeholder="Display filter..."/>
 		<<must-be-valid-filter "display-filter">>
 		<<must-be-defined "display-filter" "Display filter">>
+	</td>
+</tr>
+<tr>
+	<td align="center">
+		''Transform Filter:''<br/>
+		<p class="ec_ac-muted">
+			Advanced feature!<br/>
+			Transform the selected suggestion before it's inserted.<br/>
+			It's useful when you want to insert tiddler's text or data indexes.<br/>
+			`<currentTiddler>` contains the suggestion selected.
+		</p>
+	</td>
+	<td>
+		<$edit-text class="ec-tc-disabled" tag="textarea" field="transform-filter" placeholder="[<currentTiddler>]"/>
+		<<must-be-valid-filter "transform-filter">>
 	</td>
 </tr>
 <tr>
@@ -135,24 +151,37 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 <$let
 	temp=<<qualify "$:/temp/completion-test">>
 	rows={{{ [{$:/plugins/EvidentlyCube/AutoComplete/Config!!rows}floor[]!match[0]else[8]min[99]max[1]] }}}
+	default-transform-filter="[<currentTiddler>]"
+	filter-suffix=" +[limit<rows>]"
+	display-filter={{!!display-filter}}
+	transform-filter={{{ [{!!transform-filter}!match[]else<default-transform-filter>] }}}
+	filter={{{ [{!!filter}addsuffix<filter-suffix>] }}}
 >
 	''Query:'' <$edit-text tag="input" class="ec-tc-disabled" tiddler=<<temp>> field="query" default="" placeholder="Test..."/>
 
 	<p class="ec_ac-muted">Only the first <<rows>> results will be displayed.</p>
 
+	<table>
+	<thead>
+	<tr>
+		<th>Suggestion</th>
+		<th>Displays as</th>
+		<th>After insertion</th>
+	</tr>
+	</thead>
+	<tbody>
 	<$let
 		query={{{ [<temp>get[query]] }}}
-		filter-suffix=" +[limit<rows>]"
-		display-filter={{!!display-filter}}
-		filter={{{ [{!!filter}addsuffix<filter-suffix>] }}}
 	>
-		<ul>
-		<$list filter=<<filter>> emptyMessage="""<li class="ec_ac-muted">No results</li>""">
-			<li>
-				<$text text={{{ [<currentTiddler>subfilter<display-filter>] }}} />
-			</li>
+		<$list filter=<<filter>> emptyMessage="""<tr><td colspan="3" class="ec_ac-muted">No results</td></tr>""">
+			<tr>
+				<td><$text text={{{ [<currentTiddler>] }}} /></td>
+				<td><$text text={{{ [<currentTiddler>subfilter<display-filter>] }}} /></td>
+				<td><$text text={{{ [<currentTiddler>subfilter<transform-filter>] }}} /></td>
+			</tr>
 		</$list>
-		</ul>
 	</$let>
+	</tbody>
+	</table>
 </$let>
 </div>
