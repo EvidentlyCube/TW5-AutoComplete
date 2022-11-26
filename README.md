@@ -14,6 +14,11 @@ A versatile, customizable and easy to use auto completion plugin for TiddlyWiki.
 * Clear interface for editing the triggers
 * Manually open auto complete with customizable keyboard shortcut
 
+## Plugin compatibility
+
+ * Official [Code Mirror](https://tiddlywiki.com/plugins/tiddlywiki/codemirror/) plugin
+ * [Streams](https://saqimtiaz.github.io/streams/) by saqimtiaz
+
 # How to use
 
 * After installing head to the Control Panel and open the tab ''Evidently Cube''

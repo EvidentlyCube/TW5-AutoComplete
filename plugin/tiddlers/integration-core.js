@@ -44,18 +44,6 @@ Autocompletion integration for Simple text editor
 						event.stopImmediatePropagation();
 						event.preventDefault();
 						break;
-
-					case "Enter":
-						const option = completionAPI.getSelected();
-
-						if (option) {
-							insertSelection(option);
-						}
-
-						completionAPI.finishCompletion();
-						event.stopImmediatePropagation();
-						event.preventDefault();
-						break;
 					}
 
 			} else if (completionAPI.isManualTrigger(event)) {
@@ -76,6 +64,9 @@ Autocompletion integration for Simple text editor
 				root.addEventListener('keydown', handleFramedEscape, true);
 			}
 
+			// Streams Plugin compatibility: HHandle enter on root to circumvent new stream being created
+			root.addEventListener('keydown', handleDocumentEnter, true);
+
 			activeDom = dom;
 			triggerLength = triggerData.trigger.length;
 			selectionStart = dom.selectionStart;
@@ -89,6 +80,7 @@ Autocompletion integration for Simple text editor
 			const root = activeDom.getRootNode();
 
 			root.removeEventListener('keydown', handleFramedEscape, true);
+			root.removeEventListener('keydown', handleDocumentEnter, true);
 		}
 
 		function handleFramedEscape(event) {
@@ -96,6 +88,20 @@ Autocompletion integration for Simple text editor
 				completionAPI.finishCompletion();
 				event.stopImmediatePropagation();
 				event.preventDefault()
+			}
+		}
+
+		function handleDocumentEnter(event) {
+			if (completionAPI.isActive && event.key === "Enter" && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+				const option = completionAPI.getSelected();
+
+				if (option) {
+					insertSelection(option);
+				}
+
+				completionAPI.finishCompletion();
+				event.stopImmediatePropagation();
+				event.preventDefault();
 			}
 		}
 

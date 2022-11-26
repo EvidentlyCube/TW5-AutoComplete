@@ -1,6 +1,7 @@
 title: $:/plugins/EvidentlyCube/AutoComplete/history
 type: text/vnd.tiddlywiki
 
+* ''1.0.3'' -- Added compatibility with Streams - this plugin's Enter takes priority over Streams's Enter
 * ''1.0.2'' -- Upped version because issue
 * ''1.0.1'' -- Added `z-index` to CSS so the completion always (tries to) appear at the top
 * ''1.0.0'' -- Initial release
