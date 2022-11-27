@@ -16,8 +16,10 @@ A versatile, customizable and easy to use auto completion plugin for TiddlyWiki.
 
 ## Plugin compatibility
 
- * Official [Code Mirror](https://tiddlywiki.com/plugins/tiddlywiki/codemirror/) plugin
- * [Streams](https://saqimtiaz.github.io/streams/) by saqimtiaz
+ * The official [CodeMirror](https://tiddlywiki.com/plugins/tiddlywiki/codemirror/) plugin -- Auto Complete triggers automatically, manually and is fully interactive
+     * Also with its plugin [CodeMirror Close brackets](https://tiddlywiki.com/plugins/tiddlywiki/codemirror/#%24%3A%2Fplugins%2Ftiddlywiki%2Fcodemirror-closebrackets), if your trigger uses one of the characters that gets its mirror auto inserted it will still automatically open Auto Completion on typing
+ * [Streams](https://saqimtiaz.github.io/streams/) by *saqimtiaz* -- Pressing Enter to Auto Complete won't trigger a new stream insertion
+ * [SideEditor](http://sideeditor.tiddlyspot.com/) by *Mat von Twaddle* -- Auto Completion only appears in the currently focused window
 
 # How to use
 
