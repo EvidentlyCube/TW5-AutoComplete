@@ -75,9 +75,7 @@ Autocompletion integration for Simple text editor
 		}
 
 		function handleEngineInput(cm, operation) {
-			const data = operation && operation.text && operation.text.length === 1
-				? operation.text[0]
-				: '';
+			const data = getOperationData(cm, operation);
 
 			if (!completionAPI.isActive && data !== null && data !== "") {
 				selectionStart = cm.getCursor();
@@ -97,6 +95,28 @@ Autocompletion integration for Simple text editor
 					startCompletion(triggerData, cm);
 				}
 			}
+		}
+
+		function getOperationData(cm, operation) {
+			if (!operation || !operation.text || operation.text.length !== 1 || operation.origin !== "+input") {
+				return "";
+			}
+
+			const inputText = operation.text[0];
+
+			const autoCloseBracketsConf = cm.getOption('autoCloseBrackets');
+			if (autoCloseBracketsConf) {
+				// Special handling if autoCloseBrackets plugin is enabled
+				const pairs = autoCloseBracketsConf.pairs || "()[]{}''\"\"";
+				const index = pairs.indexOf(inputText);
+
+				// If a configured pair was input then let's act as if only the first character was inserted
+				if (index !== -1 && index % 2 === 0) {
+					return inputText.substring(0, 1);
+				}
+			}
+
+			return inputText;
 		}
 
 		function handleBlur() {

@@ -10,5 +10,4 @@ is for me to not lose track of things.
 
 
 # Known Bugs
-* When using with `tiddlywiki/codemirror-closebrackets` it auto-trigger won't work with `[[`
 * When using with `tiddlywiki/codemirror-autocomplete` it triggers both auto completions

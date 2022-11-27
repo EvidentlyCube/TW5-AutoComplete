@@ -1,6 +1,7 @@
 title: $:/plugins/EvidentlyCube/AutoComplete/history
 type: text/vnd.tiddlywiki
 
+* ''1.0.8'' -- Auto Complete now works gracefully with `codemirror-closebrackets` plugin
 * ''1.0.7'' -- Auto Complete now only opens in the window in which it was invoked when using Side Editor plugin or just opening a tiddler in a new window
 * ''1.0.6'':
 ** If you use Auto Complete in a text area that is scrolled, Auto Complete window will now be correctly positioned.
