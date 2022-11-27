@@ -18,6 +18,10 @@ Autocompletion integration for Simple text editor
 		var activeDom = null;
 		var triggerLength = -1;
 
+		// Needed to be able to detect main TW window in the mechanism that prevents
+		// Auto Complete from opening in multiple windows
+		document._ecAcWindowID = "";
+
 		editTextWidget.prototype.render = monkeypatch.sequence(editTextWidget.prototype.render, widgetRender);
 		editTextWidget.prototype.handleKeydownEvent = monkeypatch.sequence(editTextWidget.prototype.handleKeydownEvent, handleWidgetKeydown);
 		simpleEngine.prototype.handleInputEvent = monkeypatch.preventable(simpleEngine.prototype.handleInputEvent, handleEngineInput);
@@ -72,7 +76,8 @@ Autocompletion integration for Simple text editor
 			selectionStart = dom.selectionStart;
 			completionAPI.startCompletion(triggerData, getCaretCoordinates(dom, selectionStart), {
 				onSelected: insertSelection,
-				onFinish: handleFinishCompletion
+				onFinish: handleFinishCompletion,
+				windowID: dom.getRootNode()._ecAcWindowID
 			});
 		}
 

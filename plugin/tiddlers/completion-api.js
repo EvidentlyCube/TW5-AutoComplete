@@ -32,7 +32,7 @@ API for the modal
 			lastQuery: null,
 			selectedResult: -1,
 			results: [],
-			callbacks: {}
+			options: {}
 		}
 		this.options = {
 			maxRows: 8,
@@ -57,8 +57,8 @@ API for the modal
 	};
 
 	EC_AutoComplete.prototype._handleGlobalMouseDownCapture = function (event) {
-		if (this.isActive && event.target.classList.contains('ec_ac-link') && this.activeState.callbacks.onSelected) {
-			this.activeState.callbacks.onSelected(event.target.getAttribute('data-value'));
+		if (this.isActive && event.target.classList.contains('ec_ac-link') && this.activeState.options.onSelected) {
+			this.activeState.options.onSelected(event.target.getAttribute('data-value'));
 			event.stopImmediatePropagation();
 			event.preventDefault();
 		}
@@ -91,13 +91,13 @@ API for the modal
 		return null;
 	}
 
-	EC_AutoComplete.prototype.startCompletion = function (trigger, position, callbacks) {
+	EC_AutoComplete.prototype.startCompletion = function (trigger, position, options) {
 		this.isActive = true;
 		this.activeState.trigger = trigger;
 		this.activeState.lastQuery = null;
 		this.activeState.selectedResult = 0;
 		this.activeState.results = [];
-		this.activeState.callbacks = callbacks || {}
+		this.activeState.options = options || {}
 
 		this.updateQuery("");
 
@@ -106,11 +106,16 @@ API for the modal
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'show', null, "1");
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'style', null, newStyle);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'display-filter', null, trigger.displayFilter);
+		if (typeof options.windowID !== "undefined") {
+			$tw.wiki.setText(DATA_TIDDLER_NAME, 'show-window', null, options.windowID);
+		} else {
+			$tw.wiki.setText(DATA_TIDDLER_NAME, 'show-window', null, "-1");
+		}
 	};
 
 	EC_AutoComplete.prototype.finishCompletion = function () {
-		if (this.activeState.callbacks.onFinish) {
-			this.activeState.callbacks.onFinish();
+		if (this.activeState.options.onFinish) {
+			this.activeState.options.onFinish();
 		}
 
 		this.isActive = false;

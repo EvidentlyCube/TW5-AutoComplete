@@ -2,7 +2,14 @@ title: $:/plugins/EvidentlyCube/AutoComplete/window
 tags: $:/tags/PageTemplate
 
 \whitespace trim
-<$list filter="[{$:/temp/AutoComplete/completion-data!!show}match[1]]" variable="ignore">
+<$let window-id={{{ [<tw-window-id>else[]] }}}>
+<$list filter="""
+[{$:/temp/AutoComplete/completion-data!!show}]
+=[{$:/temp/AutoComplete/completion-data!!show-window}match<tv-window-id>then[1]]
+=[{$:/temp/AutoComplete/completion-data!!show-window}match[-1]then[1]]
++[match[1]count[]match[2]]
+""" variable="ignore">
+
 <ul class="ec_ac-completion" style={{$:/temp/AutoComplete/completion-data!!style}}>
 	<$list filter="[list[$:/temp/AutoComplete/completion-data]]" counter="index" emptyMessage="""<li class="label">No results</li>""">
 		<$list filter="[<index>match{$:/temp/AutoComplete/completion-data!!index}]" variable="_" emptyMessage="""
@@ -20,3 +27,4 @@ tags: $:/tags/PageTemplate
 	</$list>
 </ul>
 </$list>
+</$let>

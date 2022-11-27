@@ -69,7 +69,8 @@ Autocompletion integration for Simple text editor
 			triggerLength = triggerData.trigger.length;
 			selectionStart = cm.getCursor();
 			completionAPI.startCompletion(triggerData, getCaretCoordinates(cm, selectionStart), {
-				onSelected: insertSelection
+				onSelected: insertSelection,
+				windowID: cm.getInputField().ownerDocument._ecAcWindowID
 			});
 		}
 

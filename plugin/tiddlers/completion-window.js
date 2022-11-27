@@ -32,12 +32,16 @@ Adds support for auto complete in tiddlers opened in a new window
 			const widgetNode = $tw.wiki.makeWidget(parser, {
 				document: window.document,
 				parentWidget: $tw.rootWidget,
-				variables: { currentTiddler: "$:/plugins/EvidentlyCube/AutoComplete/window" }
+				variables: {
+					'tv-window-id': windowID
+				 }
 			});
 			const refreshHandler = function (changes) {
 				widgetNode.refresh(changes);
 			}
 
+			// Used to prevent auto complete opening in all windows
+			window.document._ecAcWindowID = windowID;
 			$tw.wiki.addEventListener("change", refreshHandler);
 			window.addEventListener("beforeunload", function (event) {
 				$tw.wiki.removeEventListener("change", refreshHandler);
