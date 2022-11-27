@@ -158,18 +158,35 @@ Autocompletion integration for Simple text editor
 
 		function getCaretCoordinates() {
 			const baseCoords = activeDom.getBoundingClientRect();
-			const document = activeDom.getRootNode();
-			const window = document.defaultView;
-			const coords = getBaseCaretCoordinates(activeDom, selectionStart);
-			const iframeCoords = getIframeOffset(activeDom);
+			const domDocument = activeDom.getRootNode();
+			const domWindow = domDocument.defaultView;
+			const caretCoords = getBaseCaretCoordinates(activeDom, selectionStart);
+			const domScroll = {left: -activeDom.scrollLeft, top: -activeDom.scrollTop};
+			const containingIframe = getContainingIframe(activeDom);
+			const iframeCoords = getIframeOffset(containingIframe);
+			const parentWindowCoords = containingIframe
+				? {left: containingIframe.ownerDocument.defaultView.scrollX, top: containingIframe.ownerDocument.defaultView.scrollY}
+				: {left: 0, top: 0};
+
+			const totalCoords = sumCoords([baseCoords, caretCoords, iframeCoords, parentWindowCoords, domScroll]);
 
 			return {
-				left: baseCoords.left + coords.left + iframeCoords.left,
-				top: baseCoords.top + coords.top + coords.height + iframeCoords.top + window.scrollY
+				left: totalCoords.left + domWindow.scrollX,
+				top:  totalCoords.top  + domWindow.scrollY + caretCoords.height
 			}
 		}
 
-		function getIframeOffset(dom) {
+		function sumCoords(coords) {
+			const totalCoords = {left: 0, top: 0};
+			for(const coord of coords) {
+				totalCoords.left += coord.left;
+				totalCoords.top += coord.top;
+			}
+
+			return totalCoords;
+		}
+
+		function getContainingIframe(dom) {
 			const root = dom.getRootNode();
 
 			if (root !== document) {
@@ -182,11 +199,17 @@ Autocompletion integration for Simple text editor
 						continue;
 					}
 
-					return iframe.getBoundingClientRect();
+					return iframe;;
 				}
 			}
 
-			return {top: 0, left: 0};
+			return null;
+		}
+
+		function getIframeOffset(containingIframe) {
+			return containingIframe
+				? containingIframe.getBoundingClientRect()
+				: {top: 0, left: 0};
 		}
 	}
 })();

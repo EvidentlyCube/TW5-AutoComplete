@@ -9,7 +9,7 @@ caption: Auto Complete
 	trigger="[["
 	filter="[all[tiddlers]!is[system]!is[draft]search:title<query>]"
 	display-filter="[<currentTiddler>]"
-	template="[[$caret$|$option$]]"
+	template="[[$option$]]$caret$"
 	auto-trigger-textarea="1"
 >
 	<$action-navigate $to=<<createTiddler-title>> scroll="yes"/>

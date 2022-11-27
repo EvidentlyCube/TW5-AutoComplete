@@ -1,6 +1,11 @@
 title: $:/plugins/EvidentlyCube/AutoComplete/history
 type: text/vnd.tiddlywiki
 
+* ''1.0.6'':
+** If you use Auto Complete in a text area that is scrolled, Auto Complete window will now be correctly positioned.
+** If you use framed editor but the main window was scrolled, Auto Complete window will now be correctly positioned
+** Fixed incorrect placeholder for description field
+** Changed the default trigger slightly
 * ''1.0.5'' -- Auto Complete now also opens in tiddlers opened in a new window
 * ''1.0.4'' -- Added `Transform Filter` option to triggers which allows transforming the suggestion before it is inserted (eg to insert a field value instead)
 * ''1.0.3'' -- Added compatibility with Streams - this plugin's Enter takes priority over Streams's Enter
