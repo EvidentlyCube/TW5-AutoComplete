@@ -15,6 +15,7 @@ Hooks the module
 	// Export name and synchronous status
 	exports.name = "evidentlycube-tiddlercompletion";
 	exports.platforms = ["browser"];
+	exports.after = ["startup"];
 	exports.before = ["render"];
 	exports.synchronous = true;
 
