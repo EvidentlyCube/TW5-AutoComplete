@@ -44,21 +44,12 @@ API for the modal
 		this._updateTriggerList(this._getTriggerTiddlerList());
 
 		document.addEventListener('keydown', this._handleGlobalKeydownCapture.bind(this), true);
-		document.addEventListener('mousedown', this._handleGlobalMouseDownCapture.bind(this), true);
 		$tw.wiki.addEventListener("change", this._handleChange.bind(this));
 	};
 
 	EC_AutoComplete.prototype._handleGlobalKeydownCapture = function (event) {
 		if (this.isActive && event.key === "Escape") {
 			this.finishCompletion();
-			event.stopImmediatePropagation();
-			event.preventDefault();
-		}
-	};
-
-	EC_AutoComplete.prototype._handleGlobalMouseDownCapture = function (event) {
-		if (this.isActive && event.target.classList.contains('ec_ac-link') && this.activeState.options.onSelected) {
-			this.activeState.options.onSelected(event.target.getAttribute('data-value'));
 			event.stopImmediatePropagation();
 			event.preventDefault();
 		}
@@ -174,6 +165,14 @@ API for the modal
 			? $tw.wiki.filterTiddlers(this.activeState.trigger.transformFilter,getVariableFauxWidget('currentTiddler', selectedResult))
 			: "";
 	};
+
+	EC_AutoComplete.prototype.setSelectionByValue = function(value) {
+		const index = this.activeState.results.indexOf(value);
+
+		if (index !== -1) {
+			this.activeState.selectedResult = index;
+		}
+	}
 
 	EC_AutoComplete.prototype.getClicked = function (event) {
 		if (event.target && event.target.classList.contains('ec_ac-link')) {

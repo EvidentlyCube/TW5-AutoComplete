@@ -64,12 +64,11 @@ Autocompletion integration for Simple text editor
 		function startCompletion(triggerData, dom) {
 			// Special handling to avoid confirm to close draft when editing in framed editor
 			const root = dom.getRootNode();
-			if (root !== document) {
-				root.addEventListener('keydown', handleFramedEscape, true);
-			}
 
-			// Streams Plugin compatibility: HHandle enter on root to circumvent new stream being created
-			root.addEventListener('keydown', handleDocumentEnter, true);
+			// Iframed editor compatibility: Prevent escape from asking to close the tiddler if completion is active
+			// Streams Plugin compatibility: Handle enter on root to circumvent new stream being created
+			root.addEventListener('keydown', handleDocumentKeydownCapture, true);
+			root.addEventListener('mousedown', handleDocumentMouseDownCapture, true);
 
 			activeDom = dom;
 			triggerLength = triggerData.trigger.length;
@@ -84,29 +83,45 @@ Autocompletion integration for Simple text editor
 		function handleFinishCompletion() {
 			const root = activeDom.getRootNode();
 
-			root.removeEventListener('keydown', handleFramedEscape, true);
-			root.removeEventListener('keydown', handleDocumentEnter, true);
+			root.removeEventListener('keydown', handleDocumentKeydownCapture, true);
 		}
 
-		function handleFramedEscape(event) {
-			if (completionAPI.isActive && event.key === 'Escape') {
-				completionAPI.finishCompletion();
-				event.stopImmediatePropagation();
-				event.preventDefault()
+		function handleDocumentMouseDownCapture(event) {
+			const target = event.target;
+			if (!completionAPI.isActive || !target || !target.classList.contains('ec_ac-link')) {
+				return;
 			}
+
+			const value = target.getAttribute('data-value');
+
+			completionAPI.setSelectionByValue(value);
+			insertSelection(completionAPI.getSelected());
 		}
 
-		function handleDocumentEnter(event) {
-			if (completionAPI.isActive && event.key === "Enter" && !event.ctrlKey && !event.shiftKey && !event.altKey) {
-				const option = completionAPI.getSelected();
+		function handleDocumentKeydownCapture(event) {
+			if (!completionAPI.isActive) {
+				return;
+			}
+			switch(event.key) {
+				case 'Escape':
+					completionAPI.finishCompletion();
+					event.stopImmediatePropagation();
+					event.preventDefault()
+					break;
 
-				if (option) {
-					insertSelection(option);
-				}
+				case 'Enter':
+					if (!event.ctrlKey && !event.shiftKey && !event.altKey) {
+						const option = completionAPI.getSelected();
 
-				completionAPI.finishCompletion();
-				event.stopImmediatePropagation();
-				event.preventDefault();
+						if (option) {
+							insertSelection(option);
+						}
+
+						completionAPI.finishCompletion();
+						event.stopImmediatePropagation();
+						event.preventDefault();
+					}
+					break;
 			}
 		}
 
