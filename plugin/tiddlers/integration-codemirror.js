@@ -13,6 +13,7 @@ Autocompletion integration for Simple text editor
 
 		var selectionStart = -1;
 		var activeCm = null;
+		var activeDocument = null;
 		var triggerLength = -1;
 
 		editCodeMirrorWidget.prototype.render = monkeypatch.sequence(editCodeMirrorWidget.prototype.render, widgetRender);
@@ -39,9 +40,10 @@ Autocompletion integration for Simple text editor
 
 						if (option) {
 							insertSelection(option);
+						} else {
+							completionAPI.finishCompletion();
 						}
 
-						completionAPI.finishCompletion();
 						event.stopImmediatePropagation();
 						event.preventDefault();
 						break;
@@ -76,12 +78,37 @@ Autocompletion integration for Simple text editor
 
 		function startCompletion(triggerData, cm) {
 			activeCm = cm;
+			activeDocument = cm.getInputField().ownerDocument;
+
+			activeDocument.addEventListener('mousedown', handleDocumentMouseDownCapture, true);
+
 			triggerLength = triggerData.trigger.length;
 			selectionStart = cm.getCursor();
 			completionAPI.startCompletion(triggerData, getCaretCoordinates(cm, selectionStart), {
-				onSelected: insertSelection,
+				onFinish: handleFinishCompletion,
 				windowID: cm.getInputField().ownerDocument._ecAcWindowID
 			});
+		}
+
+		function handleDocumentMouseDownCapture(event) {
+			const target = event.target;
+			if (!completionAPI.isActive || !target || !target.classList.contains('ec_ac-link')) {
+				return;
+			}
+
+			const value = target.getAttribute('data-value');
+
+			completionAPI.setSelectionByValue(value);
+			insertSelection(completionAPI.getSelected());
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+
+		function handleFinishCompletion() {
+			activeDocument.removeEventListener('keydown', handleDocumentMouseDownCapture, true);
+
+			activeCm = null;
+			activeDocument = null;
 		}
 
 		function handleEngineInput(cm, operation) {

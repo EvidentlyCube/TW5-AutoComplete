@@ -1,6 +1,7 @@
 title: $:/plugins/EvidentlyCube/AutoComplete/history
 type: text/vnd.tiddlywiki
 
+* ''1.0.12'' -- Various small fixes and tweaks to problems introduced between 1.0.9 and 1.0.11.
 * ''1.0.11'' -- This plugin now takes preference over `codemirror-autocomplete` and will prevent the code mirror Auto Complete from opening at the same time as this
 * ''1.0.10'' -- No longer crashes when using together with a Twitter plugin or any other plugin which delays the execution of the `startup` module
 * ''1.0.9'' -- Using mouse for Auto Complete now works in tiddlers opened in a separate window

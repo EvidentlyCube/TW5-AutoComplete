@@ -16,6 +16,8 @@ Autocompletion integration for Simple text editor
 
 		var selectionStart = -1;
 		var activeDom = null;
+		var activeDocument_keyHook = null;
+		var activeDocument_mouseHook = null;
 		var triggerLength = -1;
 
 		// Needed to be able to detect main TW window in the mechanism that prevents
@@ -63,27 +65,30 @@ Autocompletion integration for Simple text editor
 
 		function startCompletion(triggerData, dom) {
 			// Special handling to avoid confirm to close draft when editing in framed editor
-			const root = dom.getRootNode();
+			activeDocument_keyHook = dom.ownerDocument;
+			activeDocument_mouseHook = activeDocument_keyHook.defaultView.top.document;
 
 			// Iframed editor compatibility: Prevent escape from asking to close the tiddler if completion is active
 			// Streams Plugin compatibility: Handle enter on root to circumvent new stream being created
-			root.addEventListener('keydown', handleDocumentKeydownCapture, true);
-			root.addEventListener('mousedown', handleDocumentMouseDownCapture, true);
+			activeDocument_keyHook.addEventListener('keydown', handleDocumentKeydownCapture, true);
+			activeDocument_mouseHook.addEventListener('mousedown', handleDocumentMouseDownCapture, true);
 
 			activeDom = dom;
 			triggerLength = triggerData.trigger.length;
 			selectionStart = dom.selectionStart;
 			completionAPI.startCompletion(triggerData, getCaretCoordinates(dom, selectionStart), {
-				onSelected: insertSelection,
 				onFinish: handleFinishCompletion,
-				windowID: dom.getRootNode()._ecAcWindowID
+				windowID: dom.ownerDocument.defaultView.top.document._ecAcWindowID
 			});
 		}
 
 		function handleFinishCompletion() {
-			const root = activeDom.getRootNode();
+			activeDocument_keyHook.removeEventListener('keydown', handleDocumentKeydownCapture, true);
+			activeDocument_mouseHook.removeEventListener('mousedown', handleDocumentMouseDownCapture, true);
 
-			root.removeEventListener('keydown', handleDocumentKeydownCapture, true);
+			activeDom = null;
+			activeDocument_keyHook = null;
+			activeDocument_mouseHook = null;
 		}
 
 		function handleDocumentMouseDownCapture(event) {
@@ -96,6 +101,8 @@ Autocompletion integration for Simple text editor
 
 			completionAPI.setSelectionByValue(value);
 			insertSelection(completionAPI.getSelected());
+			event.preventDefault();
+			event.stopImmediatePropagation();
 		}
 
 		function handleDocumentKeydownCapture(event) {
@@ -115,9 +122,10 @@ Autocompletion integration for Simple text editor
 
 						if (option) {
 							insertSelection(option);
+						} else {
+							completionAPI.finishCompletion();
 						}
 
-						completionAPI.finishCompletion();
 						event.stopImmediatePropagation();
 						event.preventDefault();
 					}
