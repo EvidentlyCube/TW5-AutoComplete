@@ -45,6 +45,13 @@ Autocompletion integration for Simple text editor
 						event.stopImmediatePropagation();
 						event.preventDefault();
 						break;
+					default:
+						if (completionAPI.isManualTrigger(event)) {
+							// Prevent codemirror-autocomplete from triggering while this one is visible
+							event.stopImmediatePropagation();
+							event.preventDefault();
+						}
+						break;
 					}
 
 			} else if (completionAPI.isManualTrigger(event)) {
@@ -60,6 +67,9 @@ Autocompletion integration for Simple text editor
 
 				if (triggerData) {
 					startCompletion(triggerData, cm);
+					// Prevent codemirror-autocomplete from triggering
+					event.preventDefault();
+					event.stopImmediatePropagation();
 				}
 			}
 		}
