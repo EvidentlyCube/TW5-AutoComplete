@@ -15,7 +15,6 @@ API for the modal
 	"use strict";
 
 	var OPTIONS_TIDDLERS = [
-		'$:/plugins/EvidentlyCube/AutoComplete/Config',
 		'$:/config/shortcuts/EC-AutoComplete',
 		'$:/config/shortcuts-linux/EC-AutoComplete',
 		'$:/config/shortcuts-not-linux/EC-AutoComplete',
@@ -35,7 +34,6 @@ API for the modal
 			options: {}
 		}
 		this.options = {
-			maxRows: 8,
 			triggers: [],
 			triggerTiddlers: []
 		}
@@ -128,10 +126,9 @@ API for the modal
 
 		const results = $tw.wiki.filterTiddlers(this.activeState.trigger.filter, getVariableFauxWidget('query', query));
 
-		this.activeState.results = results.slice(0, this.options.maxRows);
+		this.activeState.results = results;
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'list', null, this.activeState.results);
 		$tw.wiki.setText(DATA_TIDDLER_NAME, 'index', null, 1);
-		$tw.wiki.setText(DATA_TIDDLER_NAME, 'has-more', null, results.length > this.options.maxRows ? 1 : 0);
 	};
 
 	EC_AutoComplete.prototype.changeSelection = function (delta) {
@@ -202,12 +199,6 @@ API for the modal
 	};
 
 	EC_AutoComplete.prototype._loadOptions = function () {
-		var configTiddler = $tw.wiki.getTiddler('$:/plugins/EvidentlyCube/AutoComplete/Config');
-
-		this.options.maxRows = configTiddler
-			? Math.floor(parseInt(configTiddler.fields.rows)) || 8
-			: 8;
-
 		this.options.manualTriggerKeyInfo = $tw.keyboardManager.parseKeyDescriptors('((EC-AutoComplete))', { wiki: this.wiki });
 	}
 

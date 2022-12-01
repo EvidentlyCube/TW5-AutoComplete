@@ -25,7 +25,7 @@ Autocompletion integration for Simple text editor
 		document._ecAcWindowID = "";
 
 		editTextWidget.prototype.render = monkeypatch.sequence(editTextWidget.prototype.render, widgetRender);
-		editTextWidget.prototype.handleKeydownEvent = monkeypatch.sequence(editTextWidget.prototype.handleKeydownEvent, handleWidgetKeydown);
+		editTextWidget.prototype.handleKeydownEvent = monkeypatch.preventable(editTextWidget.prototype.handleKeydownEvent, handleWidgetKeydown);
 		simpleEngine.prototype.handleInputEvent = monkeypatch.preventable(simpleEngine.prototype.handleInputEvent, handleEngineInput);
 		framedEngine.prototype.handleInputEvent = monkeypatch.preventable(framedEngine.prototype.handleInputEvent, handleEngineInput);
 
@@ -49,7 +49,7 @@ Autocompletion integration for Simple text editor
 						completionAPI.changeSelection(event.key === "ArrowUp" ? -1 : 1);
 						event.stopImmediatePropagation();
 						event.preventDefault();
-						break;
+						return false;
 					}
 
 			} else if (completionAPI.isManualTrigger(event)) {

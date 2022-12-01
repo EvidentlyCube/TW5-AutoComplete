@@ -1,6 +1,9 @@
 title: $:/plugins/EvidentlyCube/AutoComplete/history
 type: text/vnd.tiddlywiki
 
+* ''1.0.14'':
+** Fixed a bug where navigating through auto completion would still trigger TW's keyboard widgets eg. navigating auto completion in sidebar search would also change selected search result
+** The list of suggestion can now be scrolled down using the keyboard.
 * ''1.0.13'' -- Added caption to triggers to improve how they are displayed in the settings
 * ''1.0.12'' -- Various small fixes and tweaks to problems introduced between 1.0.9 and 1.0.11.
 * ''1.0.11'' -- This plugin now takes preference over `codemirror-autocomplete` and will prevent the code mirror Auto Complete from opening at the same time as this
