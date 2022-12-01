@@ -36,6 +36,15 @@ title: $:/plugins/EvidentlyCube/AutoComplete/template
 <tbody>
 <tr>
 	<td align="center">
+		''Caption:''<br/>
+		<p class="ec_ac-muted">
+			Optional caption displayed in the Control Panel instead of the tiddler name
+		</p>
+	</td>
+	<td><$edit-text class="ec-tc-disabled" field="caption" default="" placeholder="Caption..."/></td>
+</tr>
+<tr>
+	<td align="center">
 		''Description:''<br/>
 		<p class="ec_ac-muted">
 			A description of this trigger to make it easier to keep things clean.

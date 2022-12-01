@@ -4,8 +4,9 @@ caption: Auto Complete
 
 \define action-new-trigger()
 <$action-createtiddler
-	$basetitle={{{ [all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]count[]add[1]addprefix[$:/EvidentlyCube/Trigger/]] }}}
+	$basetitle={{{ [all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]!is[draft]count[]add[1]addprefix[$:/EvidentlyCube/Trigger/]] }}}
 	tags="$:/tags/EC/AutoComplete/Trigger"
+	caption={{{ [all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]!is[draft]count[]add[1]addprefix[Unnamed trigger ]] }}}
 	trigger="[["
 	filter="[all[tiddlers]!is[system]!is[draft]search:title<query>]"
 	display-filter="[<currentTiddler>]"
@@ -34,8 +35,8 @@ Configuration for the [[Auto Complete|$:/plugins/EvidentlyCube/AutoComplete]] pl
 ! Registered Triggers
 
 <ul>
-	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]!is[draft]]">
-		<li><$link to=<<currentTiddler>>><$text text=<<currentTiddler>>/></$link> (Trigger <code>{{!!trigger}}</code>)</li>
+	<$list filter="[all[shadows+tiddlers]tag[$:/tags/EC/AutoComplete/Trigger]!is[draft]sortan[title]sortan[caption]]">
+		<li><$link to=<<currentTiddler>>><$view field="caption"><$view field="title"/></$view></$link> (Trigger <code>{{!!trigger}}</code>)</li>
 	</$list>
 	<li><$button actions=<<action-new-trigger>>>Create a new trigger</$button></li>
 </ul>

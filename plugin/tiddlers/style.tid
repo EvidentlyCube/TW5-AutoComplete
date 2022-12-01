@@ -40,6 +40,7 @@ type: text/vnd.tiddlywiki
 
 .ec_ac-options p {
 	margin-top: 0;
+	margin-bottom: 0;
 }
 .ec_ac-options input:not([type="checkbox"]),
 .ec_ac-options textarea {
