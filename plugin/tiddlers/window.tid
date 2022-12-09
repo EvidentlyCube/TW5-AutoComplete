@@ -5,7 +5,7 @@ tags: $:/tags/PageTemplate
 <$let
 	window-id={{{ [<tw-window-id>else[]] }}}
 	count={{{ [list[$:/temp/AutoComplete/completion-data]count[]] }}}
-    base-limit={{$:/plugins/EvidentlyCube/AutoComplete/Config!!rows}}
+	base-limit={{$:/plugins/EvidentlyCube/AutoComplete/Config!!rows}}
 	limit={{{ [<base-limit>add[1]compare:number:eq<count>else<base-limit>] }}}
 	half-limit={{{ [<limit>divide[2]ceil[]] }}}
 	max-offset={{{ [<count>subtract<limit>] }}}
