@@ -196,7 +196,7 @@ Autocompletion integration for Simple text editor
 
 			return {
 				left: coords.left,
-				top: coords.bottom + window.scrollY
+				top: coords.bottom
 			}
 		}
 	}

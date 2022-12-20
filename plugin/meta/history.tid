@@ -3,7 +3,7 @@ type: text/vnd.tiddlywiki
 
 * ''1.0.15'':
 ** ''Code Mirror integration:'' No longer throws an exception when triggering completion in non-codemirror input when codemirror editor is opened
-
+** ''Code Mirror integration:'' Completion opens at the correct position even when window is scrolled
 * ''1.0.14'':
 ** Fixed a bug where navigating through auto completion would still trigger TW's keyboard widgets eg. navigating auto completion in sidebar search would also change selected search result
 ** The list of suggestion can now be scrolled down using the keyboard.

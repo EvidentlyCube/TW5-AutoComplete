@@ -48,7 +48,9 @@ Below is a list of all test cases. Ones marked with ` ` have been
 * [ ] Closing by changing focus works
 * [ ] Moving cursor behind the starting point closes the completion
 * [ ] Auto complete opens at correct position
-* [] Start tiddler edit and auto trigger completion in another input
+** [ ] When window is not scrolled
+** [ ] When window is scrolled
+* [ ] Start tiddler edit and auto trigger completion in another input
 
 ## Plugin: CodeMirror Close Brackets
 * [ ] Auto trigger works
