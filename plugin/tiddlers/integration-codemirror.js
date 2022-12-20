@@ -22,7 +22,7 @@ Autocompletion integration for Simple text editor
 			this.engine.cm.on('keydown', handleKeydown);
 			this.engine.cm.on('blur', handleBlur);
 			this.engine.cm.on('change', handleEngineInput);
-			this.engine.cm.on('cursorActivity', handleKeyup);
+			this.engine.cm.on('cursorActivity', handleCursorActivity);
 		}
 
 		function handleKeydown(cm, event) {
@@ -162,8 +162,8 @@ Autocompletion integration for Simple text editor
 			}
 		}
 
-		function handleKeyup(cm) {
-			if (!completionAPI.isActive) {
+		function handleCursorActivity(cm) {
+			if (!completionAPI.isActive || !cm.hasFocus()) {
 				return;
 			}
 			const cursor = cm.getCursor();
