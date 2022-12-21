@@ -92,7 +92,12 @@ Autocompletion integration for Simple text editor
 
 		function handleDocumentMouseDownCapture(event) {
 			const target = event.target;
-			if (!completionAPI.isActive || !target || !target.classList.contains('ec_ac-link')) {
+			if (
+				!completionAPI.isActive
+				|| !activeCm
+				|| !target
+				|| !target.classList.contains('ec_ac-link')
+			) {
 				return;
 			}
 
